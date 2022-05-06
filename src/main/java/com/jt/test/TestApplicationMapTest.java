@@ -59,7 +59,7 @@ public class TestApplicationMapTest {
             Map.Entry<String, Integer> mapEntry = entryIterator.next();
             System.out.println("K: "+mapEntry.getKey()+" "+"V:"+mapEntry.getValue());
         }
-
+        System.out.println("hahaha这是测试更新");
 
     }
 
