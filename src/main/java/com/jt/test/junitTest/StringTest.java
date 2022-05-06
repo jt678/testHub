@@ -56,5 +56,6 @@ public class StringTest {
         //delimiter:每个元素要添加的分隔符，elements：需要添加的元素
         str = String.join("---",str,baseStr,"这是join测试");
         System.out.println(str);
+        //测试git分支
     }
 }
