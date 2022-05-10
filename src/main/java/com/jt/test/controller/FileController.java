@@ -20,28 +20,27 @@ import java.util.Scanner;
 @Controller
 @RequestMapping("/file")
 public class FileController {
-//// TODO: 2022/5/9 问题1.每次进入次级目录之后会跳出循环，执行一次sout文件和目录数量，问题2.isDirectory状态不正常，会转成-1；
     public static  int fileCount = 0;
     public static  int directoryCount = 0;
     public static  int isDirectory = 0;
 
-    public static void main(String[] args) {
-        System.out.println("输入文件路径");
-        Scanner sc = new Scanner(System.in);
-        //如果文件路径名有空格会发生异常，需要nextline去获取输入内容
-        String pathName = sc.nextLine();
-        System.out.println(pathName);
-        File file = new File(pathName);
-        System.out.println("当前路径是否存在文件"+file.exists());
-        System.out.printf("文件名称"+file.getName());
-        System.out.println("文件长度"+file.length());
-        System.out.println("最后更新时间"+file.lastModified());
-        System.out.println("文件绝对路径是"+file.getAbsolutePath());
-        System.out.println("==============判断完成=============");
-        new FileController().getFiles(file);
-        System.out.println("==============循环遍历当前目录所有文件（包括子目录下的）=============");
-
-    }
+//    public static void main(String[] args) {
+//        System.out.println("输入文件路径");
+//        Scanner sc = new Scanner(System.in);
+//        //如果文件路径名有空格会发生异常，需要nextline去获取输入内容
+//        String pathName = sc.nextLine();
+//        System.out.println(pathName);
+//        File file = new File(pathName);
+//        System.out.println("当前路径是否存在文件"+file.exists());
+//        System.out.printf("文件名称"+file.getName());
+//        System.out.println("文件长度"+file.length());
+//        System.out.println("最后更新时间"+file.lastModified());
+//        System.out.println("文件绝对路径是"+file.getAbsolutePath());
+//        System.out.println("==============判断完成=============");
+//        new FileController().getFiles(file);
+//        System.out.println("==============循环遍历当前目录所有文件（包括子目录下的）=============");
+//
+//    }
     @ResponseBody
     @PostMapping("/get")
     public HttpResult getFiles(File file){
@@ -50,7 +49,7 @@ public class FileController {
         if("0".equals(String.valueOf(isDirectory))){
         System.out.printf("文件夹名称："+file.getName());
         System.out.println("当前路径是否存在文件："+file.exists());
-        System.out.println("文件夹总长度："+file.length());
+        System.out.println(String.format("文件夹总长度：" + file.length(),"yyyy-MM-dd"));
         System.out.println("最后更新时间："+file.lastModified());
         System.out.println("文件夹绝对路径是："+file.getAbsolutePath());
         isDirectory++;
@@ -60,7 +59,8 @@ public class FileController {
                 String result = files[i].isFile()? "一个文件": "一个目录";
                 System.out.println(files[i]+"\t"+result);
                 if ("一个目录".equals(result)){
-                    FileController.isDirectory--;
+                    if("1".equals(String.valueOf(isDirectory)))
+                    {FileController.isDirectory--;}
                     getFiles(files[i]);
                     FileController.directoryCount++;
                 }else{
@@ -71,10 +71,9 @@ public class FileController {
             if ("1".equals(String.valueOf(isDirectory))){
                 isDirectory--;
             }
-            System.out.println("文件数量"+fileCount+";目录数量"+directoryCount +"\n"+"\n");
             return HttpResult.success();
-
-        }else{
+        }else
+        {
             return HttpResult.failed("错误：文件夹不存在或文件夹内没有文件");
         }
     }
