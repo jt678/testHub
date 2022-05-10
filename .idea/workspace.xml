@@ -5,15 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="acf4f9da-03d6-4e55-80ac-04352b6c393f" name="Changes" comment="new:gitignore">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jt/test/controller/FileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jt/test/controller/FileController.java" afterDir="false" />
-    </list>
-    <list id="32ec129c-4f88-46ca-86e6-517b8ae429b0" name="ignore" comment="ignore">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/cbd40417-dbdc-4a81-aa09-49155463643f/entities/entities.dat" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/cbd40417-dbdc-4a81-aa09-49155463643f/entities/entities.dat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/cbd40417-dbdc-4a81-aa09-49155463643f/entities/entities.dat.values" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/cbd40417-dbdc-4a81-aa09-49155463643f/entities/entities.dat.values" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/cbd40417-dbdc-4a81-aa09-49155463643f/entities/entities.dat.values.s" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/cbd40417-dbdc-4a81-aa09-49155463643f/entities/entities.dat.values.s" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/cbd40417-dbdc-4a81-aa09-49155463643f/entities/entities.dat_i" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/cbd40417-dbdc-4a81-aa09-49155463643f/entities/entities.dat_i" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
+    <list id="32ec129c-4f88-46ca-86e6-517b8ae429b0" name="ignore" comment="ignore" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -83,6 +79,9 @@
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.jt.test.domain.bo" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\study\test\.idea" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.jt.test.domain.vo" />
@@ -226,7 +225,7 @@
       <workItem from="1651824879033" duration="2438000" />
       <workItem from="1651914059419" duration="1969000" />
       <workItem from="1651936527968" duration="20604000" />
-      <workItem from="1652145420487" duration="2020000" />
+      <workItem from="1652145420487" duration="2966000" />
     </task>
     <task id="LOCAL-00001" summary="测试提交">
       <created>1651804971921</created>
@@ -297,15 +296,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="new:gitignore" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/jt/test/controller/FileController.java</url>
-          <line>48</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <pin-to-top-manager>
       <pinned-members>
         <PinnedItemInfo parentTag="org.apache.tomcat.util.http.fileupload.util.FileItemHeadersImpl" memberName="headerNameToValueListMap" />
