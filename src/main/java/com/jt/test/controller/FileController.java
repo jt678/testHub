@@ -20,7 +20,7 @@ import java.util.Scanner;
 @Controller
 @RequestMapping("/file")
 public class FileController {
-//// TODO: 2022/5/9 问题1.每次进入次级目录之后会跳出循环，执行一次sout文件和目录数量，问题2.isDirectory状态不正常，会转成-1； 
+//// TODO: 2022/5/9 问题1.每次进入次级目录之后会跳出循环，执行一次sout文件和目录数量，问题2.isDirectory状态不正常，会转成-1；
     public static  int fileCount = 0;
     public static  int directoryCount = 0;
     public static  int isDirectory = 0;
