@@ -82,6 +82,10 @@ public class StringTest {
         String[] arrayStr = new String[]{"Java","Test","Array","List"};
 //        String b = testString.substring(3,4);
 
+        //Int显式转换成String
+        int[] array = new int[]{1,2,3,4};
+        String string1 = Integer.toString(1);
+
         for (String test :tests) {
             System.out.println(test);
         }
