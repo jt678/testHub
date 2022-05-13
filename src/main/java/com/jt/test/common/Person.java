@@ -1,4 +1,4 @@
-package com.jt.test.domain.entity;
+package com.jt.test.common;
 
 import lombok.Data;
 
@@ -20,5 +20,9 @@ public class Person {
         this.name = name;
         this.sex = sex;
         Age = age;
+    }
+    public void feed (Animal animal){
+        System.out.println(name+"喂了"+animal.getName()+",");
+        animal.afterEat();
     }
 }
