@@ -1,4 +1,4 @@
-package com.jt.test.domain;
+package com.jt.test.domain.entity;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.IdType;

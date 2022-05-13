@@ -1,6 +1,6 @@
 package com.jt.test.convert;
 
-import com.jt.test.domain.Order;
+import com.jt.test.domain.entity.Order;
 import com.jt.test.domain.bo.OrderBO;
 import com.jt.test.domain.dto.OrderDTO;
 import com.jt.test.domain.vo.OrderVO;

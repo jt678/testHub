@@ -1,7 +1,7 @@
 package com.jt.test.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.jt.test.domain.Order;
+import com.jt.test.domain.entity.Order;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jt.test.domain.dto.OrderDTO;
 

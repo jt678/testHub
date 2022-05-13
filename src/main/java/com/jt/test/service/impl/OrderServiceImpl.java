@@ -2,11 +2,10 @@ package com.jt.test.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.jt.test.domain.Order;
+import com.jt.test.domain.entity.Order;
 import com.jt.test.domain.dto.OrderDTO;
 import com.jt.test.service.OrderService;
 import com.jt.test.mapper.OrderMapper;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

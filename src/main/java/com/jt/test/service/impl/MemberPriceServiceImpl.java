@@ -1,7 +1,7 @@
 package com.jt.test.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.jt.test.domain.MemberPrice;
+import com.jt.test.domain.entity.MemberPrice;
 import com.jt.test.service.MemberPriceService;
 import com.jt.test.mapper.MemberPriceMapper;
 import org.springframework.stereotype.Service;

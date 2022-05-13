@@ -1,6 +1,6 @@
 package com.jt.test.service;
 
-import com.jt.test.domain.MemberPrice;
+import com.jt.test.domain.entity.MemberPrice;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

@@ -1,6 +1,6 @@
 package com.jt.test.helper;
 
-import com.jt.test.domain.Order;
+import com.jt.test.domain.entity.Order;
 import com.jt.test.service.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,10 +10,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Future;
 
 /**
  * ThreadHelper

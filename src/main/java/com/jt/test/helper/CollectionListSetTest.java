@@ -1,13 +1,12 @@
 package com.jt.test.helper;
 
-import com.jt.test.domain.Person;
+import com.jt.test.domain.entity.Person;
 import com.jt.test.utils.myEnum.GenderEnum;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * CollectionListSetTest
