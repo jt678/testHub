@@ -33,6 +33,9 @@ public class AsListTest {
     }
 
     @Test
+    /**
+     * Collections.reverse的使用
+     */
     public void listReverse(){
         List list = new ArrayList();
         String[] strings = new String[]{"1","2","3","4"};

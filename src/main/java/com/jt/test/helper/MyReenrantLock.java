@@ -1,5 +1,7 @@
 package com.jt.test.helper;
 
+import com.jt.test.junitTest.HumanClassTest;
+
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.concurrent.locks.Lock;
@@ -22,7 +24,7 @@ public class MyReenrantLock implements Runnable{
             //上锁,后面必须接try finally
             lock.lock();
             try {
-
+                final int max_test = HumanClassTest.max_test;
                 System.out.println("当前线程名："+Thread.currentThread().getName()+",i="+i+"now:"+System.currentTimeMillis());
             } finally {
                 //解锁，必须在finally第一行

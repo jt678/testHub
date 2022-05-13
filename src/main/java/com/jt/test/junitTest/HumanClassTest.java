@@ -89,6 +89,8 @@ public class HumanClassTest {
         insideStaticClass.test2();
     }
 
+    public static  final int max_test  = 1;
+
 
 
 
