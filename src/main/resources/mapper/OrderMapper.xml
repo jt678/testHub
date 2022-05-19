@@ -70,17 +70,15 @@
     </sql>
     <select id="listBySearch" resultType="com.jt.test.domain.entity.Order">
 
-        select <include refid="Base_Column_List" /> from oms_order
+        select <include refid="Base_Column_List" /> from mall.oms_order
 
         <where>
             <if test="dto.conditions != null">
                 and
                 <foreach collection="dto.conditions" item="item" open="(" close=")" separator="OR">
-                    id like concat('%',#{item},'%')
-                    or
                     member_username like concat('%',#{item},'%')
                     or
-                    bill_type like concat('%',#{item},'%')
+                    promotion_info like concat('%',#{item},'%')
                 </foreach>
             </if>
         </where>
