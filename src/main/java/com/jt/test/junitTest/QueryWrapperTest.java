@@ -2,6 +2,8 @@ package com.jt.test.junitTest;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jt.test.TestApplicationMapTest;
 import com.jt.test.convert.BrandConvert;
 import com.jt.test.domain.Brand;
@@ -79,6 +81,26 @@ public class QueryWrapperTest {
             //每次得到一个map里所有values
             Collection<Object> values = allmap.values();
             System.out.println(values);
+        }
+    }
+
+    /**
+     * page和List具体区别
+     */
+    @Test
+    public void PageTest(){
+
+        //mybatisplus的page和list不同,结论：page多封装了一层
+        List<Brand> list = service.list();
+        IPage<Brand> myPage = new Page<>(1,30);
+        for (Brand brand:list) {
+            System.out.println(brand);
+        }
+
+        IPage<Brand> Result = service.page(myPage);
+        List<Brand> records = Result.getRecords();
+        for (Brand brand:records) {
+            System.out.println(brand);
         }
     }
 }
