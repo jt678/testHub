@@ -26,7 +26,7 @@ import java.util.List;
  **/
 @Controller
 @RequestMapping("/test")
-@Api("测试")
+@Api(tags = "测试")
 public class OrderController {
     @Autowired
     private OrderHelper helper;
