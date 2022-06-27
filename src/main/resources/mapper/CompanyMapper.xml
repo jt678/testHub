@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jt.test.mapper.CompanyMapper">
+
+    <resultMap id="BaseResultMap" type="com.jt.test.domain.Company">
+            <id property="companyId" column="company_id" jdbcType="VARCHAR"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="ip" column="ip" jdbcType="VARCHAR"/>
+            <result property="time" column="time" jdbcType="TIMESTAMP"/>
+            <result property="sid" column="sid" jdbcType="VARCHAR"/>
+            <result property="sname" column="sname" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        company_id,name,status,
+        ip,time,sid,
+        sname
+    </sql>
+</mapper>

@@ -32,14 +32,12 @@ public class BrandHelper {
 
     public HttpResult<List<BrandVO>> list(BrandBO bo) {
         //测试需求：分页按条件查询品牌，且条件有一个是复合条件
-        List<BrandVO> voList = new ArrayList();
         //先拿出来所有的数据，然后分页
         IPage<Brand> page = new Page<>(bo.getPageNum(),bo.getPageSize());
         LambdaQueryWrapper<Brand> lambda = new QueryWrapper<Brand>().lambda()
 //                .eq(Brand::getName,bo.getName())
                 .eq(Brand::getFirstLetter,bo.getFirstLetter())
-                .between(Brand::getSort,0,200)
-                ;
+                .between(Brand::getSort,0,200);
 //        BrandDTO dto = convert.bo2Dto(bo);
 //        LambdaQueryWrapper<Brand> lambda = new QueryWrapper<Brand>().lambda()
 //                .eq(Brand::getLogo,dto.getCondition())
@@ -52,7 +50,7 @@ public class BrandHelper {
 //                ;
         IPage<Brand> result = brandService.page(page,lambda);
         List<Brand> records = result.getRecords();
-        voList = convert.entities2vos(records);
+        List<BrandVO> voList = convert.entities2vos(records);
         return HttpResult.success(result.getTotal(),voList);
     }
     /**

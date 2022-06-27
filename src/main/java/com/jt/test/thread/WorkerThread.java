@@ -1,4 +1,4 @@
-package com.jt.test.helper;
+package com.jt.test.thread;
 
 import java.util.concurrent.CountDownLatch;
 

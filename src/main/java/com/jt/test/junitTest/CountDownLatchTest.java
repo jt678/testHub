@@ -1,7 +1,7 @@
 package com.jt.test.junitTest;
 
-import com.jt.test.helper.WaitThread;
-import com.jt.test.helper.WorkerThread;
+import com.jt.test.thread.WaitThread;
+import com.jt.test.thread.WorkerThread;
 
 import java.util.concurrent.CountDownLatch;
 

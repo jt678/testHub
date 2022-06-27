@@ -1,12 +1,13 @@
-package com.jt.test.helper;
+package com.jt.test.junitTest;
 
 import com.jt.test.common.Person;
+import com.jt.test.domain.entity.User;
 import com.jt.test.utils.myEnum.GenderEnum;
+import org.junit.Test;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * CollectionListSetTest
@@ -43,5 +44,26 @@ public class CollectionListSetTest {
                 System.out.println("姓名："+ nextPerson.getName()+"   性别："+ nextPerson.getSex()+"\n");
             }
         }
+    }
+
+    /**
+     * List根据某个字段去重方法
+     */
+    @Test
+    public void listMath(){
+        List<User> userList = new ArrayList<>();
+
+        userList.add(new User("1","李大锤","23","南京"));
+        userList.add(new User("2","张无忌","18","西安"));
+        userList.add(new User("3","刘德华","26","苏州"));
+        userList.add(new User("4","郭靖","33","上海"));
+
+        userList.add(new User("1","李大锤","23","南京"));    //id相同，其他数据也相同
+        userList.add(new User("3","带头大哥","36","杭州"));  //id相同，其他数据不同
+
+        System.out.println(userList);
+        //根据userid去重
+        userList = userList.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(User :: getId))), ArrayList::new));
+        System.out.println(userList);
     }
 }

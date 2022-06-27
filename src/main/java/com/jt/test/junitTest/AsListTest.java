@@ -1,4 +1,4 @@
-package com.jt.test.helper;
+package com.jt.test.junitTest;
 import com.jt.test.TestApplicationMapTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
