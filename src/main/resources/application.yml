@@ -6,7 +6,7 @@ spring:
       enabled: false
   datasource:
     druid:
-      url: jdbc:mysql://localhost:3306/mysql?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true&rewriteBatchedStatements=true
+      url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true&rewriteBatchedStatements=true
       username: root
       password: Jt123456.
       filter:

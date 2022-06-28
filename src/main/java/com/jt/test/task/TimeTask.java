@@ -32,8 +32,9 @@ public class TimeTask {
     private CompanyService companyService;
 
 
-
-    @Scheduled(cron = "0/10 * * * * ?")
+    //每分钟的第*0秒开始，10秒钟一次
+//    {秒数} {分钟} {小时} {日期} {月份} {星期} {年份(可为空)}
+    @Scheduled(cron = "*/10 40 * * * *")
     @Async
     public void sync2() {
         try {
