@@ -39,7 +39,7 @@ public class TimeTask {
 
     //每分钟的第*0秒开始，10秒钟一次
 //    {秒数} {分钟} {小时} {日期} {月份} {星期} {年份(可为空)}
-    @Scheduled(cron = "* */5 * * * *")
+    @Scheduled(cron = "0 */5 * * * *")
 //    @Scheduled(cron = "*/10 * * * * *")
     @Async
     public void sync() {
@@ -61,7 +61,8 @@ public class TimeTask {
                 }
 
                 companyService.saveOrUpdateBatch(companyList);
-                System.out.println("这些是四分钟前在线未接收到信号的数据："+JSONObject.toJSONString(companyList));
+                List<Company> returnList = companyService.list(new LambdaQueryWrapper<Company>().eq(Company::getStatus, 0));
+                System.out.println("这些是四分钟前在线未接收到信号的数据："+JSONObject.toJSONString(returnList));
             }else
 
             System.out.printf("没有四分钟前的数据");
