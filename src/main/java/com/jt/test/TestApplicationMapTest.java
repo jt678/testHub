@@ -4,6 +4,7 @@ import com.jt.test.helper.OrderHelper;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.*;
 
@@ -11,6 +12,8 @@ import java.util.*;
  * @author j
  * @date 2022/3/8
  */
+//使用这个只能使用swagger，不能解决knife4j的问题
+//@EnableWebMvc
 @SpringBootApplication
 @MapperScan("com.jt.test.mapper")
 public class TestApplicationMapTest {
@@ -72,7 +75,7 @@ public class TestApplicationMapTest {
             System.out.println("K: "+mapEntry.getKey()+" "+"V:"+mapEntry.getValue());
         }
         testMap.clear();
-        System.out.println("hahaha这是测试更新");
+        System.out.println("===========================================启动成功===========================================");
 
     }
 

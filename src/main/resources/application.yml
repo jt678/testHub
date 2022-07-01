@@ -4,6 +4,10 @@ spring:
     name: text
     admin:
       enabled: false
+# springfox使用的路径匹配是基于ant_path_matcher,spring-boot 2.6.x之后使用的是path_pattern_matcher(parser),不更改knife4j会白页错误
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   datasource:
     druid:
       url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true&rewriteBatchedStatements=true
