@@ -1,21 +1,25 @@
 package com.jt.test.junitTest.java8Test;
 
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.jt.test.TestApplicationMapTest;
 import com.jt.test.domain.Brand;
 import com.jt.test.service.BrandService;
 import org.apache.commons.compress.utils.Lists;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+
 
 /**
  * Java8StreamTest
@@ -26,8 +30,30 @@ import java.util.stream.Stream;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestApplicationMapTest.class)
 public class Java8StreamTest {
+    private LocalDateTime start;
+
+    /**
+     * 单类运行时间切面
+     */
+    @Before
+    public void init(){
+        start = LocalDateTime.now();
+    }
+
+    @After
+    public void destory(){
+        LocalDateTime end = LocalDateTime.now();
+        Duration between = Duration.between(start, end);
+
+        System.out.println("耗时："+between.toString().substring(2));
+    }
+
+
+
+
     @Autowired
     private BrandService brandService;
+
 
     /**
      * Comparator的comparing相关方法
@@ -97,7 +123,7 @@ public class Java8StreamTest {
                 .flatMap(Arrays::stream)
                 .distinct()
                 .findAny();
-        //并行流parallelStream中会随机取
+        //并行流parallelStream中会随机取,因为在并行流中一个流会被分割成多个子流来并行操作
         String any2 = words.parallelStream()
                 .map(w -> w.split(""))
                 .flatMap(Arrays::stream)
@@ -118,6 +144,7 @@ public class Java8StreamTest {
         list2.add("list2Demo");
 
 //        Stream<Object> stream = list2.stream();
+
         List<Object> concatList = Stream.concat(list1.stream(), list2.stream()).collect(Collectors.toList());
         System.out.println(JSON.toJSONString(concatList));
         //与allMatch对应还有noneMatch，此处如果定义了list2流则它只能被消费一次，因为此处流被上面collect操作结束了，所以此时stream里没有内容
@@ -128,16 +155,79 @@ public class Java8StreamTest {
         System.out.println(b2);
     }
 
+    /**
+     * stream流一些基本计算
+     */
     @Test
     public void StreamMath(){
         //使用reduce求和------reduce除了减少还有归纳的意思
         List<Integer> nums = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8);
-        //0是初始值，否则.get()获取
-        Integer sumNum = nums.stream().reduce(0,(a, b) -> a + b);
-        System.out.println(sumNum);
+        //reduce(identity,accumulator,combiner)
+        //0---identity保存归并参数的初始值，当stream为空默认也返回此值
+        //(a, b) -> a + b----accumulator,a是上次计算的值，b是流的下一个元素的值
+        int sumNum = nums.stream().reduce(0,(a, b) -> a + b);
+        //可以用lambda简化sum函数来实现
+        Integer sumReduce = nums.stream().reduce(0,Integer::sum);
+        System.out.println((sumNum == 36)+"And"+ (sumReduce == 36));
 
-        //ifPresent()使用以及返回最大值和最小值
-        nums.stream().reduce(Integer::max).ifPresent(x -> System.out.println(x));
-        nums.stream().reduce(Integer::min).ifPresent(x -> System.out.println(x));
+        //combiner
+//        Arrays.asList(User::getName)
+
+        //返回最大值和最小值以及ifPresent()如果存在则操作
+        nums.stream().reduce(Integer::max).ifPresent(System.out::println);
+        nums.stream().reduce(Integer::min).ifPresent(System.out::println);
+
     }
+
+    /**
+     * redyce方法的介绍和参数异同
+     */
+    @Test
+    public void streamReduce(){
+        List<Integer> ages = Arrays.asList(25, 30, 45, 28, 32);
+        System.out.println(ages.parallelStream().reduce(0, (a, b) -> a + b, Integer::sum));
+        System.out.println(ages.stream().reduce(0, Integer::sum));
+        System.out.println(ages.stream().reduce(0, (a, b) -> a + b));
+        //返回的是Optional容器，要再get一次
+        System.out.println(ages.stream().reduce((a, b) -> a + b));
+
+
+
+    }
+
+    /**
+     * 使用并行流安全问题及处理
+     */
+    public void parallelStreamT(){
+        //并行流线程安全问题
+        ArrayList<Integer> testList = Lists.newArrayList();
+        for (int i = 0;i<1000;i++) {
+            testList.add(i);
+        }
+        //1000条
+        System.out.println("实验数据条数："+testList.stream().count());
+//      此处是第一次尝试加锁对象错误，应该在操作List加 ---List<Integer> synchronizedTestList = Collections.synchronizedList(testList);
+
+        ArrayList<Integer> targetList1 = Lists.newArrayList();
+        ArrayList<Integer> targetList2 = Lists.newArrayList();
+        ArrayList<Integer> targetList3 = Lists.newArrayList();
+        //未上锁
+        testList.parallelStream().forEach(targetList1::add);
+        //上锁数据添加
+        //方法一：包装我们要操作的List使其上锁
+        testList.parallelStream().forEach(Collections.synchronizedList(targetList2)::add);
+        //方法二：stream的toArray/collect方法
+        Object[] objects = testList.parallelStream().toArray();
+        for (Object object : objects) {
+            int i = Integer.parseInt(object.toString());
+            targetList3.add(i);
+        }
+
+        //预期1000条但是实际上每次都只有960条左右，synchronized之后也是(错误原因--应该给进行添加操作的List加锁，因为是他在执行任务时把任务拆成并行),成功加锁后数据一致
+        System.out.println("并行流实验对象1数据条数(线程不安全)："+targetList1.size()
+                +"\n"+"并行流实验对象2数据条数(synchronized)："+targetList2.size()
+                +"\n"+"并行流实验对象3数据条数(toArray)："+targetList3.size());
+    }
+
+
 }
