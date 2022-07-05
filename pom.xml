@@ -152,7 +152,19 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
-
+<!--        微信公众号支持-->
+        <!-- https://mvnrepository.com/artifact/com.github.binarywang/weixin-java-mp -->
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-mp</artifactId>
+            <version>4.3.5.B</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.github.binarywang/weixin-java-common -->
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-common</artifactId>
+            <version>4.3.5.B</version>
+        </dependency>
 
 
     </dependencies>
@@ -187,7 +199,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.3.7.RELEASE</version>
                 <configuration>
-                    <mainClass>com.jt.test.TestApplicationMapTest</mainClass>
+                    <mainClass>com.jt.test.TestApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

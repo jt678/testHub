@@ -22,10 +22,15 @@ spring:
           merge-sql: true
 
 server:
-  port: 9999
-  servlet:
-    context-path: /ak47
+  port: 80
+#  servlet:
+#    context-path: /ak47
 logging:
   level:
     com.jt.test.mapper : debug
+
+wechat:
+  mpAppId: wxf9fc4558c1f2812e
+  mpAppSecret: bbb816109367824cf2f96bae0e791100
+  mpToken: 678911
 
