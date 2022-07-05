@@ -1,14 +1,11 @@
 package com.jt.test.junitTest;
 
 import cn.hutool.core.util.StrUtil;
-import com.jt.test.TestApplicationMapTest;
+import com.jt.test.TestApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * StrUtilTest
@@ -17,7 +14,7 @@ import java.util.List;
  * @date 2022/5/9
  **/
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = TestApplicationMapTest.class)
+@SpringBootTest(classes = TestApplication.class)
 public class StrUtilTest {
     @Test
     public void StrJudgeTest(){

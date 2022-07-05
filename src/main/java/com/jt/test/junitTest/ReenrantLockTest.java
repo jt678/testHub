@@ -1,15 +1,11 @@
 package com.jt.test.junitTest;
 
-import com.jt.test.TestApplicationMapTest;
+import com.jt.test.TestApplication;
 import com.jt.test.helper.MyReenrantLock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 
 
 /**
@@ -19,7 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @date 2022/5/12
  **/
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = TestApplicationMapTest.class)
+@SpringBootTest(classes = TestApplication.class)
 public class ReenrantLockTest {
 
     @Test

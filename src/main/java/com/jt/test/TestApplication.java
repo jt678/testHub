@@ -4,7 +4,6 @@ import com.jt.test.helper.OrderHelper;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.*;
 
@@ -16,13 +15,13 @@ import java.util.*;
 //@EnableWebMvc
 @SpringBootApplication
 @MapperScan("com.jt.test.mapper")
-public class TestApplicationMapTest {
+public class TestApplication {
     private static OrderHelper helper;
     private static Object OrderBO;
 
     public static void main(String[] args) {
         Date now = new Date();
-        SpringApplication.run(TestApplicationMapTest.class, args);
+        SpringApplication.run(TestApplication.class, args);
 
 
 //            System.out.println("测试项目启动成功~!hhh"+now);

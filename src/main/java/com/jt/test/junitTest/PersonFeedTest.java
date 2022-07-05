@@ -1,6 +1,6 @@
 package com.jt.test.junitTest;
 
-import com.jt.test.TestApplicationMapTest;
+import com.jt.test.TestApplication;
 import com.jt.test.common.Animal;
 import com.jt.test.common.Person;
 import com.jt.test.domain.Cat;
@@ -18,7 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @date 2022/5/13
  **/
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = TestApplicationMapTest.class)
+@SpringBootTest(classes = TestApplication.class)
 public class PersonFeedTest {
     @Test
     public void personFeed(){

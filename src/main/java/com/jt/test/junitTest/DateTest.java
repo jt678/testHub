@@ -1,7 +1,6 @@
 package com.jt.test.junitTest;
 
-import com.jt.test.TestApplicationMapTest;
-import com.jt.test.domain.entity.User;
+import com.jt.test.TestApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,9 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * DateTest
@@ -22,7 +19,7 @@ import java.util.stream.Collectors;
  * @date 2022/5/12
  **/
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = TestApplicationMapTest.class)
+@SpringBootTest(classes = TestApplication.class)
 public class DateTest {
     @Test
     public void dateTest() throws ParseException {

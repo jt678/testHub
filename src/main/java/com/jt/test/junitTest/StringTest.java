@@ -1,6 +1,6 @@
 package com.jt.test.junitTest;
 
-import com.jt.test.TestApplicationMapTest;
+import com.jt.test.TestApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,7 +9,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * StringTest
@@ -18,7 +17,7 @@ import java.util.regex.Pattern;
  * @date 2022/5/6
  **/
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = TestApplicationMapTest.class)
+@SpringBootTest(classes = TestApplication.class)
 /**
  * 使用场景：
  * String基本测试，

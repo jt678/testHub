@@ -1,8 +1,9 @@
 package com.jt.test.junitTest.java8Test;
 
 import com.alibaba.fastjson.JSON;
-import com.jt.test.TestApplicationMapTest;
+import com.jt.test.TestApplication;
 import com.jt.test.domain.Brand;
+import com.jt.test.domain.entity.User;
 import com.jt.test.service.BrandService;
 import org.apache.commons.compress.utils.Lists;
 import org.junit.After;
@@ -28,7 +29,7 @@ import java.util.stream.Stream;
  * @Date: 2022/6/29 14:47
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = TestApplicationMapTest.class)
+@SpringBootTest(classes = TestApplication.class)
 public class Java8StreamTest {
     private LocalDateTime start;
 
@@ -164,7 +165,8 @@ public class Java8StreamTest {
         List<Integer> nums = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8);
         //reduce(identity,accumulator,combiner)
         //0---identity保存归并参数的初始值，当stream为空默认也返回此值
-        //(a, b) -> a + b----accumulator,a是上次计算的值，b是流的下一个元素的值
+        //(a, b) -> a + b----accumulator（累加器）,a是上次计算的值，b是流的下一个元素的值
+        //combiner 在下个方法有用
         int sumNum = nums.stream().reduce(0,(a, b) -> a + b);
         //可以用lambda简化sum函数来实现
         Integer sumReduce = nums.stream().reduce(0,Integer::sum);
@@ -189,14 +191,18 @@ public class Java8StreamTest {
         System.out.println(ages.stream().reduce(0, Integer::sum));
         System.out.println(ages.stream().reduce(0, (a, b) -> a + b));
         //返回的是Optional容器，要再get一次
-        System.out.println(ages.stream().reduce((a, b) -> a + b));
+        System.out.println(ages.parallelStream().reduce((a, b) -> a + b));
+        List<User> userList = Arrays.asList(new User("jt", 14), new User("tt", 13),new User("jj",15));
 
-
-
+        //此处的Integer::sum 就是combiner（组合器），累加函数实现运算，但是流中的包含的是User对象，但是函数的参数是数字和user对象，所以编译器无法推断参数user的类型，需要组合器
+        Integer result = userList.stream().reduce(42,(a, b) -> a - b.getAge(), Integer::sum);
+        //当顺序读流或累加器参数和它的实现的实现类型匹配，则不需要组合器
+        userList.stream().reduce(userList.get(0).getAge(),(a,b) -> a - b.getAge(),Integer::sum);
+        System.out.println(result);
     }
 
     /**
-     * 使用并行流安全问题及处理
+     * 使用并行流安全问题及处理--- 慎用（1.线程不安全 2.可能引起竞态条件 3.并发可能消耗更多资源 4.公共线程池裂开。。。）
      */
     public void parallelStreamT(){
         //并行流线程安全问题
@@ -224,6 +230,7 @@ public class Java8StreamTest {
         }
 
         //预期1000条但是实际上每次都只有960条左右，synchronized之后也是(错误原因--应该给进行添加操作的List加锁，因为是他在执行任务时把任务拆成并行),成功加锁后数据一致
+        //加synchronized会保证同一时刻只能被一个线程使用
         System.out.println("并行流实验对象1数据条数(线程不安全)："+targetList1.size()
                 +"\n"+"并行流实验对象2数据条数(synchronized)："+targetList2.size()
                 +"\n"+"并行流实验对象3数据条数(toArray)："+targetList3.size());

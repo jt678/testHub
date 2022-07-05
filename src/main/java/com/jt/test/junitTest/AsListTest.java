@@ -1,5 +1,5 @@
 package com.jt.test.junitTest;
-import com.jt.test.TestApplicationMapTest;
+import com.jt.test.TestApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +14,7 @@ import java.util.*;
  * @date 2022/4/8
  **/
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = TestApplicationMapTest.class )
+@SpringBootTest(classes = TestApplication.class )
 public class AsListTest {
     @Test
     public  void asListTest() {

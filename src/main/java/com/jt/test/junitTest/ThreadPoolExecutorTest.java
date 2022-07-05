@@ -1,20 +1,17 @@
 package com.jt.test.junitTest;
 
-import com.jt.test.TestApplicationMapTest;
+import com.jt.test.TestApplication;
 import com.jt.test.helper.TaskThreadHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.*;
 
 /**
  * ThreadPoolExecutorTest
@@ -23,7 +20,7 @@ import java.util.concurrent.*;
  * @date 2022/4/2
  **/
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = TestApplicationMapTest.class)
+@SpringBootTest(classes = TestApplication.class)
 public class ThreadPoolExecutorTest {
     @Autowired
     TaskThreadHelper taskThreadHelper;

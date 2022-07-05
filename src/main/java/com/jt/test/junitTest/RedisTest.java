@@ -1,6 +1,6 @@
 package com.jt.test.junitTest;
 
-import com.jt.test.TestApplicationMapTest;
+import com.jt.test.TestApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import java.util.List;
  * @date 2022/5/5
  **/
 @RunWith(SpringJUnit4ClassRunner.class )
-@SpringBootTest(classes = TestApplicationMapTest.class)
+@SpringBootTest(classes = TestApplication.class)
 public class RedisTest {
 
     @Autowired

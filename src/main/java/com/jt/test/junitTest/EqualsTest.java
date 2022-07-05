@@ -1,6 +1,6 @@
 package com.jt.test.junitTest;
 
-import com.jt.test.TestApplicationMapTest;
+import com.jt.test.TestApplication;
 import com.jt.test.annotation.Log;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @date 2022/5/13
  **/
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = TestApplicationMapTest.class )
+@SpringBootTest(classes = TestApplication.class )
 public class EqualsTest {
     @Test
     @Log(title = "测试log",isSaveRequestData = false,isSaveResponseData = false)

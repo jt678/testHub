@@ -53,13 +53,13 @@ public class CollectionListSetTest {
     public void listMath(){
         List<User> userList = new ArrayList<>();
 
-        userList.add(new User("1","李大锤","23","南京"));
-        userList.add(new User("2","张无忌","18","西安"));
-        userList.add(new User("3","刘德华","26","苏州"));
-        userList.add(new User("4","郭靖","33","上海"));
+        userList.add(new User(1L,"李大锤",23,"南京"));
+        userList.add(new User(2L,"张无忌",18,"西安"));
+        userList.add(new User(3L,"刘德华",26,"苏州"));
+        userList.add(new User(4L,"郭靖",33,"上海"));
 
-        userList.add(new User("1","李大锤","23","南京"));    //id相同，其他数据也相同
-        userList.add(new User("3","带头大哥","36","杭州"));  //id相同，其他数据不同
+        userList.add(new User(1L,"李大锤",23,"南京"));    //id相同，其他数据也相同
+        userList.add(new User(3L,"带头大哥",36,"杭州"));  //id相同，其他数据不同
 
         System.out.println(userList);
         //根据userid去重

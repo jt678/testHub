@@ -1,9 +1,7 @@
 package com.jt.test.junitTest.java8Test;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.jt.test.TestApplicationMapTest;
+import com.jt.test.TestApplication;
 import com.jt.test.common.*;
-import com.jt.test.domain.Brand;
 import com.jt.test.service.BrandService;
 import org.apache.commons.compress.utils.Lists;
 import org.junit.Test;
@@ -13,10 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 /**
@@ -25,7 +19,7 @@ import java.util.stream.Stream;
  * @Author: jt
  * @Date: 2022/6/28 14:21
  */
-@SpringBootTest(classes = TestApplicationMapTest.class)
+@SpringBootTest(classes = TestApplication.class)
 @RunWith(SpringRunner.class)
 public class Java8LambdaTest {
     @Autowired

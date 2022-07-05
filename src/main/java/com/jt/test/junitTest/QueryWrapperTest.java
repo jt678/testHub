@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.jt.test.TestApplicationMapTest;
+import com.jt.test.TestApplication;
 import com.jt.test.convert.BrandConvert;
 import com.jt.test.domain.Brand;
 import com.jt.test.service.BrandService;
@@ -22,7 +22,7 @@ import java.util.*;
  * @author jt
  * @date 2022/5/19
  **/
-@SpringBootTest(classes = TestApplicationMapTest.class)
+@SpringBootTest(classes = TestApplication.class)
 @RunWith(SpringRunner.class)
 public class QueryWrapperTest {
     @Autowired
