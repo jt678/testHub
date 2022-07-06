@@ -30,7 +30,7 @@ logging:
     com.jt.test.mapper : debug
 
 wechat:
-  mpAppId: wxf9fc4558c1f2812e
-  mpAppSecret: bbb816109367824cf2f96bae0e791100
+  mpAppId: wxbaf2ce65862f52a8
+  mpAppSecret: 5c3bf830eb7ddb3c7383ebc81e6e55c4
   mpToken: 678911
 

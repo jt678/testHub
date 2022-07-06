@@ -1,19 +1,24 @@
 package com.jt.test.utils;
 
+import cn.hutool.http.HttpUtil;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.jt.test.domain.vo.UserVO;
+import io.swagger.util.Json;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.Lists;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * wxMessageUtils
@@ -23,6 +28,19 @@ import java.util.Map;
  */
 @Slf4j
 public class wxMessageUtils {
+
+    @Value("${wechat.mpAppId}")
+    private static String appId;
+    @Value("${wechat.mpAppSecret}")
+    private static String appSecret;
+    @Value("${wechat.mpToken}")
+    private static String token;
+
+    //目前我的个人微信公众号没有调用这些接口的权限，需要腾讯灰度测试后内部进行邀请
+    private static String ACCESS_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
+    private static String USER_INFO_URL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
+    private static String USER_LIST_URL ="https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID";
+
 
     /**
      * 获取公众号发来的信息（有点像爬虫）
@@ -90,12 +108,12 @@ public class wxMessageUtils {
 
             else
             result = buildReply(msgMap,"正在开发中，别急");
-        }else {
+        }else if(msgType.toUpperCase().equals("EVENT")) {
             //发送者账号
             String fromUserName = msgMap.get("FromUserName");
             //开发者账号
             String toUserName = msgMap.get("ToUserName");
-
+            //第一次关注，事件为event，发送这条消息
             return String.format(
                     "<xml>" +
                             "<ToUserName><![CDATA[%s]]></ToUserName>" +
@@ -103,7 +121,10 @@ public class wxMessageUtils {
                             "<CreateTime>%s</CreateTime>" +
                             "<MsgType><![CDATA[text]]></MsgType>" +
                             "<Content><![CDATA[%s]]></Content>" + "</xml>",
-                    fromUserName, toUserName, getUtcTime(),"请回复如下关键词：\n商品介绍\n客服\n人工客服\n商品链接\n商品图");
+                    fromUserName, toUserName, getUtcTime(),
+//                    "请回复如下关键词：\n商品介绍\n客服\n人工客服\n商品链接\n商品图"
+                    "你好，这是一个测试公众号，如需联系请回复所在城市和手机号，方便我们的人员联系，同时你可以回复如下关键词：\n商品介绍\n客服\n人工客服\n商品链接\n商品图\n来获取一些简单的支持"
+            );
         }
         return result;
     }
@@ -116,6 +137,7 @@ public class wxMessageUtils {
         String fromUserName = msgMap.get("FromUserName");
         //开发者账号
         String toUserName = msgMap.get("ToUserName");
+        //最后返回给微信服务器的是这个东西，再返回给客户端
         return String.format(
                 "<xml>" +
                         "<ToUserName><![CDATA[%s]]></ToUserName>" +
@@ -147,7 +169,7 @@ public class wxMessageUtils {
     }
 
     /**
-     * 返回语音消息给公众号
+     * 返回语音消息给公众号(还未写完)
      */
     private static String sendVoiceMessage(Map<String,String> msgMap){
         //发送者账号
@@ -167,6 +189,47 @@ public class wxMessageUtils {
                         "</xml>",
                 fromUserName,toUserName, getUtcTime(),mediaId
                );
+    }
+
+    /**
+     * 获取Access Token
+     */
+    public static String getAccessToken(){
+        //拼接请求地址
+        String accessTokenUrl = USER_INFO_URL.replace("APPID",appId).replace("APPSECRET",appSecret);
+        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.get(accessTokenUrl));
+        String accessToken = String.valueOf(jsonObject.get("access_token"));
+        return  accessToken;
+    }
+
+    /**
+     * 获取用户信息
+     */
+    public static List<UserVO> getUserInfo(String accessToken){
+        //获取用户列表的openIdList,NEXT_OPENID------第一个拉取的openId，不填默认从头开始拉取，这里是测试，所以默认不填
+        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.get(USER_LIST_URL.replace("ACCESS_TOKEN", accessToken).replace("NEXT_OPENID","")));
+        //获取用户OPENID数组转化成List
+        String openidString = JSONArray.toJSONString(jsonObject.get("openid"));
+        List<String> openIdList = Arrays.asList(openidString.split(","));
+
+        ArrayList<UserVO> userInfoList = Lists.newArrayList();
+        UserVO userVO = new UserVO();
+        for (String openId : openIdList) {
+            //构建用户信息的接口，填充参数
+            String userInfoUrl = USER_INFO_URL.replace("ACCESS_TOKEN", accessToken).replace("OPENID", openId);
+            JSONObject infoJsonObject = JSONObject.parseObject(HttpUtil.get(userInfoUrl));
+            //此字段标识用户是否还在关注，为0时代表没有关注公众号拉取不到其余数据
+            Integer subscribe = infoJsonObject.getInteger("subscribe");
+            if(subscribe.equals(1)){
+            String unionid = infoJsonObject.getString("unionid");
+            String openid = infoJsonObject.getString("openid");
+            userVO.setUnionid(unionid);
+            userVO.setOpenid(openid);
+            userInfoList.add(userVO);
+            }
+        }
+        //最后得到的时用户信息的一个LIST,里面有OpenId和UnionId做唯一标识
+        return  userInfoList;
     }
 
 }

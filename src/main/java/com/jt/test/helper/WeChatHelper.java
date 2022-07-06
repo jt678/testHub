@@ -33,7 +33,7 @@ public class WeChatHelper {
     private String token;
 
     /**
-     * token 验证
+     * token 验证 + 被动回复功能
      */
     public void token(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -44,6 +44,8 @@ public class WeChatHelper {
         //这个东西要返回给微信服务端，微信服务端来判断接口是否连接上了
         String echostr = request.getParameter("echostr");
         String method = request.getMethod();
+
+        String requestURI = request.getRequestURI();
         //如果是get请求，说明是配置在微信后台url发过来的请求
         if (method.equals("GET")) {
             PrintWriter out = null;
