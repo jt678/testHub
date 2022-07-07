@@ -1,19 +1,14 @@
 package com.jt.test.utils;
 
 import cn.hutool.http.HttpUtil;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jt.test.domain.vo.UserVO;
-import io.swagger.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.Lists;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
-
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +23,7 @@ import java.util.*;
  * @Date: 2022/7/5 14:00
  */
 @Slf4j
-public class wxMessageUtils {
+public class WxMessageUtils {
 
 
     //目前我的个人微信公众号没有调用这些接口的权限，需要腾讯灰度测试后内部进行邀请
@@ -225,11 +220,6 @@ public class wxMessageUtils {
         //最后得到的时用户信息的一个LIST,里面有OpenId和UnionId做唯一标识
         return  userInfoList;
     }
-
-    /**
-     * 上传图文素材，获取素材id
-     */
-
 
 
 }
