@@ -1,6 +1,7 @@
 package com.jt.test.utils;
 
 import cn.hutool.http.HttpUtil;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jt.test.domain.vo.UserVO;
@@ -29,17 +30,11 @@ import java.util.*;
 @Slf4j
 public class wxMessageUtils {
 
-    @Value("${wechat.mpAppId}")
-    private static String appId;
-    @Value("${wechat.mpAppSecret}")
-    private static String appSecret;
-    @Value("${wechat.mpToken}")
-    private static String token;
 
     //目前我的个人微信公众号没有调用这些接口的权限，需要腾讯灰度测试后内部进行邀请
     private static String ACCESS_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
-    private static String USER_INFO_URL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
     private static String USER_LIST_URL ="https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID";
+    private static String USER_INFO_URL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
 
 
     /**
@@ -194,9 +189,10 @@ public class wxMessageUtils {
     /**
      * 获取Access Token
      */
-    public static String getAccessToken(){
+    public static String getAccessToken(String appId,String appSecret ){
+
         //拼接请求地址
-        String accessTokenUrl = USER_INFO_URL.replace("APPID",appId).replace("APPSECRET",appSecret);
+        String accessTokenUrl = ACCESS_TOKEN_URL.replace("APPID",appId).replace("APPSECRET",appSecret);
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.get(accessTokenUrl));
         String accessToken = String.valueOf(jsonObject.get("access_token"));
         return  accessToken;
@@ -209,11 +205,12 @@ public class wxMessageUtils {
         //获取用户列表的openIdList,NEXT_OPENID------第一个拉取的openId，不填默认从头开始拉取，这里是测试，所以默认不填
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.get(USER_LIST_URL.replace("ACCESS_TOKEN", accessToken).replace("NEXT_OPENID","")));
         //获取用户OPENID数组转化成List
-        String openidString = JSONArray.toJSONString(jsonObject.get("openid"));
-        List<String> openIdList = Arrays.asList(openidString.split(","));
+        JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("openid");
+
+
+        List<String> openIdList = JSONObject.parseArray(String.valueOf(jsonArray),String.class) ;
 
         ArrayList<UserVO> userInfoList = Lists.newArrayList();
-        UserVO userVO = new UserVO();
         for (String openId : openIdList) {
             //构建用户信息的接口，填充参数
             String userInfoUrl = USER_INFO_URL.replace("ACCESS_TOKEN", accessToken).replace("OPENID", openId);
@@ -221,15 +218,18 @@ public class wxMessageUtils {
             //此字段标识用户是否还在关注，为0时代表没有关注公众号拉取不到其余数据
             Integer subscribe = infoJsonObject.getInteger("subscribe");
             if(subscribe.equals(1)){
-            String unionid = infoJsonObject.getString("unionid");
-            String openid = infoJsonObject.getString("openid");
-            userVO.setUnionid(unionid);
-            userVO.setOpenid(openid);
-            userInfoList.add(userVO);
+                UserVO userVO = JSONObject.toJavaObject(infoJsonObject, UserVO.class);
+                userInfoList.add(userVO);
             }
         }
         //最后得到的时用户信息的一个LIST,里面有OpenId和UnionId做唯一标识
         return  userInfoList;
     }
+
+    /**
+     * 上传图文素材，获取素材id
+     */
+
+
 
 }

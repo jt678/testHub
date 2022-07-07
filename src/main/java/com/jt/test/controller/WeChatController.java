@@ -1,5 +1,7 @@
 package com.jt.test.controller;
 
+import com.jt.test.common.HttpResult;
+import com.jt.test.domain.vo.UserVO;
 import com.jt.test.helper.WeChatHelper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * WeChatController
@@ -20,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 @Controller
 @Api(tags = "微信公众号开发")
+//@RequestMapping("/wx")
 public class WeChatController {
     @Autowired
     private WeChatHelper weChatHelper;
@@ -31,4 +35,11 @@ public class WeChatController {
         weChatHelper.token(request,response);
     }
 
+    @ApiOperation("获取关注用户基本信息")
+    @GetMapping(value = "/getBaseInfo")
+    @ResponseBody
+    public HttpResult<List<UserVO>> getBaseInfo(){
+
+        return HttpResult.success(weChatHelper.getBaseInfo());
+    }
 }

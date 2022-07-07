@@ -1,5 +1,6 @@
 package com.jt.test.helper;
 
+import com.jt.test.domain.vo.UserVO;
 import com.jt.test.utils.StringUtils;
 import com.jt.test.utils.wxMessageUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -8,12 +9,14 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.jws.soap.SOAPBinding;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -84,6 +87,13 @@ public class WeChatHelper {
 
     }
 
+    public List<UserVO> getBaseInfo() {
+        String appId1 = appId;
+        String appSecret1 = appSecret;
+        String accessToken = wxMessageUtils.getAccessToken(appId,appSecret);
+        List<UserVO> userInfoList = wxMessageUtils.getUserInfo(accessToken);
+        return  userInfoList;
+    }
 }
 
 
