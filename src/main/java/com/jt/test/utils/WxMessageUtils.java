@@ -9,6 +9,8 @@ import org.apache.commons.compress.utils.Lists;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.springframework.scheduling.annotation.Async;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
@@ -184,6 +186,7 @@ public class WxMessageUtils {
     /**
      * 获取Access Token
      */
+
     public static String getAccessToken(String appId,String appSecret ){
 
         //拼接请求地址
@@ -206,11 +209,13 @@ public class WxMessageUtils {
         List<String> openIdList = JSONObject.parseArray(String.valueOf(jsonArray),String.class) ;
 
         ArrayList<UserVO> userInfoList = Lists.newArrayList();
+
+        //有优化的点，微信Api提供了一个批量查询基础信息的接口，如果用for循环每次去请求有点慢
         for (String openId : openIdList) {
             //构建用户信息的接口，填充参数
             String userInfoUrl = USER_INFO_URL.replace("ACCESS_TOKEN", accessToken).replace("OPENID", openId);
             JSONObject infoJsonObject = JSONObject.parseObject(HttpUtil.get(userInfoUrl));
-            //此字段标识用户是否还在关注，为0时代表没有关注公众号拉取不到其余数据
+            //此字段标识用户是否还在关注，为0时代表没有关注公众号拉取不到其余数据，这里加一层判断是做测试无实际作用，获取到的subsribe必为1
             Integer subscribe = infoJsonObject.getInteger("subscribe");
             if(subscribe.equals(1)){
                 UserVO userVO = JSONObject.toJavaObject(infoJsonObject, UserVO.class);

@@ -96,8 +96,7 @@ public class WeChatHelper {
      * @return
      */
     public List<UserVO> getBaseInfo() {
-        String appId1 = appId;
-        String appSecret1 = appSecret;
+
         String accessToken = WxMessageUtils.getAccessToken(appId,appSecret);
         List<UserVO> userInfoList = WxMessageUtils.getUserInfo(accessToken);
         return  userInfoList;
