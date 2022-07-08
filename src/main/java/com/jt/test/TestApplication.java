@@ -74,7 +74,7 @@ public class TestApplication {
             System.out.println("K: "+mapEntry.getKey()+" "+"V:"+mapEntry.getValue());
         }
         testMap.clear();
-        System.out.println("===========================================启动成功===========================================");
+        System.out.println("===========================================启动成功del===========================================");
 
     }
 
