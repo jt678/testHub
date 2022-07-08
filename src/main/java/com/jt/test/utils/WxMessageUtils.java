@@ -3,20 +3,27 @@ package com.jt.test.utils;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.jt.test.domain.UserInfo;
 import com.jt.test.domain.vo.UserVO;
+import com.jt.test.service.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.Lists;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * wxMessageUtils
@@ -25,12 +32,23 @@ import java.util.*;
  * @Date: 2022/7/5 14:00
  */
 @Slf4j
+@Component
 public class WxMessageUtils {
+
+    @Autowired
+    private  UserInfoService userInfoService;
+    private static WxMessageUtils wxMessageUtils;
+
+    @PostConstruct
+    public void init(){
+        wxMessageUtils = this;
+        wxMessageUtils.userInfoService = this.userInfoService;
+    }
 
 
     //目前我的个人微信公众号没有调用这些接口的权限，需要腾讯灰度测试后内部进行邀请
     private static String ACCESS_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
-    private static String USER_LIST_URL ="https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID";
+    private static String OPENID_LIST_URL ="https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID";
     private static String USER_INFO_URL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
 
 
@@ -197,11 +215,14 @@ public class WxMessageUtils {
     }
 
     /**
-     * 获取用户信息
+     * 获取用户信息，并将最新数据新增保存到本地库
      */
+
     public static List<UserVO> getUserInfo(String accessToken){
+
         //获取用户列表的openIdList,NEXT_OPENID------第一个拉取的openId，不填默认从头开始拉取，这里是测试，所以默认不填
-        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.get(USER_LIST_URL.replace("ACCESS_TOKEN", accessToken).replace("NEXT_OPENID","")));
+        //当关注量很大时，可以通过next_openId多次拉取，next_oendId会在查询中返回
+        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.get(OPENID_LIST_URL.replace("ACCESS_TOKEN", accessToken).replace("NEXT_OPENID","")));
         //获取用户OPENID数组转化成List
         JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("openid");
 
@@ -209,19 +230,43 @@ public class WxMessageUtils {
         List<String> openIdList = JSONObject.parseArray(String.valueOf(jsonArray),String.class) ;
 
         ArrayList<UserVO> userInfoList = Lists.newArrayList();
+        ArrayList<UserInfo> userInfos = Lists.newArrayList();
+        Map<String,Long> idMap = new HashMap<>(); //尝试用stream构建map
+        List<UserInfo> allUserInfoList = wxMessageUtils.userInfoService.list();
+
+        if (!allUserInfoList.isEmpty()){
+         idMap = allUserInfoList.stream().collect(Collectors.toMap(UserInfo::getOpenid, UserInfo::getId));
+        }
+
 
         //有优化的点，微信Api提供了一个批量查询基础信息的接口，如果用for循环每次去请求有点慢
         for (String openId : openIdList) {
             //构建用户信息的接口，填充参数
             String userInfoUrl = USER_INFO_URL.replace("ACCESS_TOKEN", accessToken).replace("OPENID", openId);
             JSONObject infoJsonObject = JSONObject.parseObject(HttpUtil.get(userInfoUrl));
-            //此字段标识用户是否还在关注，为0时代表没有关注公众号拉取不到其余数据，这里加一层判断是做测试无实际作用，获取到的subsribe必为1
-            Integer subscribe = infoJsonObject.getInteger("subscribe");
-            if(subscribe.equals(1)){
-                UserVO userVO = JSONObject.toJavaObject(infoJsonObject, UserVO.class);
-                userInfoList.add(userVO);
+
+            //这里有个坑，wx传来的时间戳是到秒的，jsonobject.tojavaObject自动解析到毫秒会错误,要手动处理下在解析前把10位时间戳凭借成13位的
+            String  subscribe = infoJsonObject.getInteger("subscribe_time").toString();
+            String i = subscribe.concat("000");
+            infoJsonObject.put("subscribe_time",i);
+            //把需要的信息返回给前端
+            UserVO userVO = JSONObject.toJavaObject(infoJsonObject, UserVO.class);
+            userInfoList.add(userVO);
+
+            UserInfo userInfo = JSONObject.toJavaObject(infoJsonObject, UserInfo.class);
+            //saveOrUpdate,但是调微信接口返回是必没有Id的，只能用openId做唯一标识，先把数据库的OpenId和Id查出来做个map，用来判断有没有
+            //数据库没有，set新生成的id然后save进数据库，有则拿到id然后set原id做update操作
+
+            String id = String.valueOf(idMap.get(userInfo.getOpenid()));
+            Date subscribeTime = userInfo.getSubscribeTime();
+            if (StringUtils.isEmpty(id) && id.equals("")){
+                userInfo.setId(SqlIdUtils.getId());
+            }else {
+                userInfo.setId(idMap.get(userInfo.getOpenid()));
             }
+            userInfos.add(userInfo);
         }
+        wxMessageUtils.userInfoService.saveOrUpdateBatch(userInfos);
         //最后得到的时用户信息的一个LIST,里面有OpenId和UnionId做唯一标识
         return  userInfoList;
     }

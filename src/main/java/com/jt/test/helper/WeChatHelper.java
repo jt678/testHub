@@ -3,7 +3,9 @@ package com.jt.test.helper;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.jt.test.domain.UserInfo;
 import com.jt.test.domain.vo.UserVO;
+import com.jt.test.service.UserInfoService;
 import com.jt.test.utils.WxMessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.util.crypto.SHA1;
@@ -12,7 +14,10 @@ import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 
@@ -21,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * WeChatHelper
@@ -37,7 +43,21 @@ public class WeChatHelper {
     private String appSecret;
     @Value("${wechat.mpToken}")
     private String token;
+    private String accessToken;
     private static String USER_LIST_URL ="https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID";
+    @Autowired
+    private UserInfoService userInfoService;
+
+    /**
+     * 每一个小时获取一次AccessToken
+     */
+    @Scheduled(fixedDelay = 3600*1000)
+    @Async
+    public void sync(){
+        String accessTokennow = WxMessageUtils.getAccessToken(appId,appSecret);
+        accessToken = accessTokennow;
+        log.info("自动获取到最新的AccessToken："+accessToken+"\n有效时间为一个半小时");
+    }
 
     /**
      * token 验证 + 被动回复功能
@@ -92,18 +112,19 @@ public class WeChatHelper {
     }
 
     /**
-     * 获取用户基本信息（还在关注中0）
+     * 获取用户基本信息（还在关注中0），并将最新数据保存更新到本地库
      * @return
      */
     public List<UserVO> getBaseInfo() {
 
-        String accessToken = WxMessageUtils.getAccessToken(appId,appSecret);
         List<UserVO> userInfoList = WxMessageUtils.getUserInfo(accessToken);
         return  userInfoList;
     }
 
     /**
-     * 基础根据openID群发内容
+     * 基础根据openID群发内容----不止是数据库里有的，数据库里可能没有，但是其实是关注了的也会发送，此处是获取最新关注人数据然后发送，但是如果有筛选条件存在，新关注的用户但是没有入库的，筛选条件必然对它们失效，如果想要最新数据满足筛选的目前只能再去调一次getBaseInfo（）方法
+     * （测试条件：只推给关注来源是其他人推送名片关注的）
+     * 即subscribe_scene为“ADD_SCENE_PROFILE_CARD”
      * @return
      */
 
@@ -117,8 +138,6 @@ public class WeChatHelper {
 
         //2,推送消息
         //获取所有的openIdList
-        String accessToken = WxMessageUtils.getAccessToken(appId, appSecret);
-
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.get(USER_LIST_URL.replace("ACCESS_TOKEN", accessToken).replace("NEXT_OPENID","")));
         //获取用户OPENID数组转化成List
         JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("openid");
@@ -136,10 +155,16 @@ public class WeChatHelper {
         //3,如果是正式版发送模版消息，这里需要配置你的信息
 //                templateMessage.addData(new WxMpTemplateData("name", "value", "#FF00FF"));
 //                templateMessage.addData(new WxMpTemplateData(name2, value2, color2));
+
+        //测试：为了满足测试只给特定人群发送，组件一个Map
+        Map<String, String> subscribeSceneMap = userInfoService.list().stream().collect(Collectors.toMap(UserInfo::getOpenid, UserInfo::getSubscribeScene));
         try {
+
             for (String openId : openIdList) {
+                String allowed = "ADD_SCENE_OTHERS";
+                if (allowed.equals(subscribeSceneMap.get(openId))){
                 templateMessage.setToUser(openId);//要推送的用户openid
-                wxMpService.getTemplateMsgService().sendTemplateMsg(templateMessage);
+                wxMpService.getTemplateMsgService().sendTemplateMsg(templateMessage);}
             }
 
             return "推送成功";

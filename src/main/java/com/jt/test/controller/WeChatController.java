@@ -48,6 +48,7 @@ public class WeChatController {
     @PostMapping("/groupSending")
     @ResponseBody
     public void groupSending(){
-       weChatHelper.groupSending();
+        String s = weChatHelper.groupSending();
+        System.out.println(s);
     }
 }
