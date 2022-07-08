@@ -36,7 +36,7 @@ public class WeChatController {
         weChatHelper.token(request,response);
     }
 
-    @ApiOperation("获取关注用户基本信息")
+    @ApiOperation("获取关注用户基本信息+入库")
     @GetMapping(value = "/getBaseInfo")
     @ResponseBody
     public HttpResult<List<UserVO>> getBaseInfo(){
@@ -44,7 +44,7 @@ public class WeChatController {
         return HttpResult.success(weChatHelper.getBaseInfo());
     }
 
-    @ApiOperation("根据openId群发信息")
+    @ApiOperation("根据openId+筛选人群发信息")
     @PostMapping("/groupSending")
     @ResponseBody
     public void groupSending(){

@@ -69,6 +69,7 @@ public class WxMessageUtils {
             Document document = saxReader.read(inputStream);
             //获得xml解析后的根节点，再获取下面所有的根节点下面的子节点
             List<Element> elements = document.getRootElement().elements();
+            //此处打断点可看到，再rootElement里的内容明明有12个，但是最终得到elements只有6个，是因为每个元素后面带有一个“\n”换行符，所以是12个
             for (Element element : elements) {
                 Element element0 = elements.get(0);
                 log.info(element.getName()+"||"+ element.getText());
