@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
+
 /**
  * UserVO
  *
@@ -23,7 +25,7 @@ public class UserVO {
 
     @ApiModelProperty("订阅时间（时间戳入参）")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private String subscribeTime;
+    private Date subscribeTime;
 
     private String unionid;
 

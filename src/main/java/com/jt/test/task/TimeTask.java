@@ -41,6 +41,8 @@ public class TimeTask {
 //    {秒数} {分钟} {小时} {日期} {月份} {星期} {年份(可为空)}
     @Scheduled(cron = "0 */15 * * * *")
 //    @Scheduled(cron = "*/10 * * * * *")
+//    @Scheduled(fixedDelay = 1000*60) //1分钟一次,从上次执行结束开始计算
+//    @Scheduled(fixedRate = 1000*60)//1分钟一次，从上次执行开始计算
     @Async
     public void sync() {
         try {
