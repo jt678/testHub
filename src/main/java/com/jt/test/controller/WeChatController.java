@@ -29,7 +29,7 @@ public class WeChatController {
     @Autowired
     private WeChatHelper weChatHelper;
 
-    @ApiOperation("对请求进行校验")
+    @ApiOperation("对请求进行校验+自动回复")
     @RequestMapping(value = "/wx")
     @ResponseBody
     public void test(HttpServletRequest request, HttpServletResponse response) throws Exception {
