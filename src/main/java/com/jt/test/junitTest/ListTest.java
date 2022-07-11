@@ -1,11 +1,16 @@
 package com.jt.test.junitTest;
+import com.alibaba.fastjson.JSONObject;
 import com.jt.test.TestApplication;
+import com.jt.test.domain.Brand;
+import com.jt.test.service.BrandService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * AsListTest
@@ -15,7 +20,10 @@ import java.util.*;
  **/
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestApplication.class )
-public class AsListTest {
+public class ListTest {
+    @Autowired
+    private BrandService brandService;
+
     @Test
     public  void asListTest() {
 
@@ -55,5 +63,44 @@ public class AsListTest {
         Collections.reverse(stringsList);
         System.out.println("反序后int数组:"+stringsList);
     }
+
+    /**
+     * for循环删除测试
+     */
+    @Test
+    public void forDel(){
+
+        //删除错误，下标不准确
+        List<Long> idList = brandService.list().stream().map(Brand::getId).collect(Collectors.toList());
+        for (int i = 0; i < idList.size(); i++) {
+           if (idList.get(i)>0){
+               idList.remove(i);
+           }
+        }
+        System.out.println("idList:"+JSONObject.toJSONString(idList));
+
+        //报错
+        List<Integer> statusList = brandService.list().stream().map(Brand::getFactoryStatus).collect(Collectors.toList());
+//        for (Integer status : statusList) {
+//            if (! status.equals(3)){
+//                statusList.remove(status);
+//            }
+//        }
+//        System.out.println("statusList"+JSONObject.toJSONString(statusList));
+
+        //迭代器删除成功
+        Iterator<Integer> iterator = statusList.iterator();
+        while (iterator.hasNext()){
+
+            Integer next = iterator.next();
+            if (next == null || ! next.equals(3)){
+
+               iterator.remove();
+            }
+        }
+        System.out.println("statusList:"+JSONObject.toJSONString(statusList));
+    }
+
+
 
 }
