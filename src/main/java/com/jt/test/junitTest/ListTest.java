@@ -101,6 +101,22 @@ public class ListTest {
         System.out.println("statusList:"+JSONObject.toJSONString(statusList));
     }
 
+    /**
+     * 获取List的差集
+     */
+    @Test
+    public void  diffSet(){
+    List<String> listA = new ArrayList<>();
+    List<String> listB = new ArrayList<>();
+    listA.add("1st");
+    listA.add("2nd");
+    listA.add("3rd");
+    listB.add("1st");
+    listB.add("2nd");
+    //预期结果是3rd------成功
+    listA.removeAll(listB);
+    System.out.println(listA);
 
+    }
 
 }
