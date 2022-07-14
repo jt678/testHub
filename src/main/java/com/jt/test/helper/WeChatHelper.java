@@ -56,7 +56,9 @@ public class WeChatHelper {
     public void sync(){
         String accessTokennow = WxMessageUtils.getAccessToken(appId,appSecret);
         accessToken = accessTokennow;
-        log.info("自动获取到最新的AccessToken："+accessToken+"\n有效时间为一个半小时");
+        if (accessToken != null){
+        log.info("自动获取到最新的AccessToken："+accessToken+"     (有效时间为一个半小时)");}
+
     }
 
     /**
@@ -122,7 +124,7 @@ public class WeChatHelper {
     }
 
     /**
-     * 基础根据openID群发内容----不止是数据库里有的，数据库里可能没有，但是其实是关注了的也会发送，此处是获取最新关注人数据然后发送，但是如果有筛选条件存在，新关注的用户但是没有入库的，筛选条件必然对它们失效，如果想要最新数据满足筛选的目前只能再去调一次getBaseInfo（）方法
+     * 基础根据openID群发内容----数据里有的，且符合条件的才会发
      * （测试条件：只推给关注来源是其他人推送名片关注的）
      * 即subscribe_scene为“ADD_SCENE_PROFILE_CARD”
      * @return
@@ -148,9 +150,9 @@ public class WeChatHelper {
         WxMpTemplateMessage templateMessage = new WxMpTemplateMessage();
         templateMessage.setTemplateId("WJoT0B_n_VqbHIp8gX9loPlTUJTfBITcd_RQY7wV0Iw");//模版id
         templateMessage.setUrl("http://www.10010.com/net5/011/");//点击模版消息要访问的网址
-        templateMessage.addData(new WxMpTemplateData("name","jt"))
-                .addData(new WxMpTemplateData("tel_num","181****8417"))
-                .addData(new WxMpTemplateData("money","-1￥"))
+        templateMessage.addData(new WxMpTemplateData("name","jt","#8B0000"))
+                .addData(new WxMpTemplateData("tel_num","181****8417","#FFD700"))
+                .addData(new WxMpTemplateData("money","-1￥","#FFD700"))
                 .addData(new WxMpTemplateData("多余信息测试","11111"));
         //3,如果是正式版发送模版消息，这里需要配置你的信息
 //                templateMessage.addData(new WxMpTemplateData("name", "value", "#FF00FF"));
@@ -161,7 +163,7 @@ public class WeChatHelper {
         try {
 
             for (String openId : openIdList) {
-                String allowed = "ADD_SCENE_OTHERS";
+                String allowed = "ADD_SCENE_QR_CODE";
                 if (allowed.equals(subscribeSceneMap.get(openId))){
                 templateMessage.setToUser(openId);//要推送的用户openid
                 wxMpService.getTemplateMsgService().sendTemplateMsg(templateMessage);}

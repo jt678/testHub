@@ -211,12 +211,18 @@ public class WxMessageUtils {
         //拼接请求地址
         String accessTokenUrl = ACCESS_TOKEN_URL.replace("APPID",appId).replace("APPSECRET",appSecret);
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.get(accessTokenUrl));
-        String accessToken = String.valueOf(jsonObject.get("access_token"));
-        return  accessToken;
+
+        if (jsonObject.get("errmsg") == null){
+            String accessToken = String.valueOf(jsonObject.get("access_token"));
+            return  accessToken;
+        }else
+            log.error("token获取失败原因："+jsonObject.get("errmsg").toString());
+            return null;
+
     }
 
     /**
-     * 获取用户信息，并将最新数据新增保存到本地库
+     * 获取用户信息，并将最新数据新增保存到本地库，取消关注的用户删除
      */
 
     public static List<UserVO> getUserInfo(String accessToken){
@@ -232,6 +238,7 @@ public class WxMessageUtils {
 
         ArrayList<UserVO> userInfoList = Lists.newArrayList();
         ArrayList<UserInfo> userInfos = Lists.newArrayList();
+        List<String> mapOpenidList = new ArrayList<>();
         Map<String,Long> idMap = new HashMap<>(); //尝试用stream构建map
         List<UserInfo> allUserInfoList = wxMessageUtils.userInfoService.list();
 
@@ -269,6 +276,16 @@ public class WxMessageUtils {
         }
         wxMessageUtils.userInfoService.saveOrUpdateBatch(userInfos);
         //最后得到的时用户信息的一个LIST,里面有OpenId和UnionId做唯一标识
+
+        if (!allUserInfoList.isEmpty()){
+            idMap = allUserInfoList.stream().collect(Collectors.toMap(UserInfo::getOpenid, UserInfo::getId));
+            mapOpenidList = idMap.keySet().stream().collect(Collectors.toList());
+        }
+        //获取两个集合的差集，数据库有，但是最新没有的
+        mapOpenidList.removeAll(openIdList);
+        //如果List有值执行删除操作，把未关注用户从数据库移除
+        if (!mapOpenidList.isEmpty())
+            wxMessageUtils.userInfoService.remove(new LambdaQueryWrapper<UserInfo>().in(UserInfo::getOpenid,mapOpenidList));
         return  userInfoList;
     }
 
