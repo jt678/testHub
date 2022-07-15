@@ -1,7 +1,7 @@
 package com.jt.test.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.jt.test.domain.UserInfo;
+import com.jt.test.domain.entity.UserInfo;
 import com.jt.test.service.UserInfoService;
 import com.jt.test.mapper.UserInfoMapper;
 import org.springframework.stereotype.Service;

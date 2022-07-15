@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jt.test.TestApplication;
 import com.jt.test.convert.BrandConvert;
-import com.jt.test.domain.Brand;
+import com.jt.test.domain.entity.Brand;
 import com.jt.test.service.BrandService;
 import org.junit.Test;
 import org.junit.runner.RunWith;

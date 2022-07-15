@@ -6,15 +6,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jt.test.common.HttpResult;
 import com.jt.test.convert.BrandConvert;
-import com.jt.test.domain.Brand;
+import com.jt.test.domain.entity.Brand;
 import com.jt.test.domain.bo.BrandBO;
-import com.jt.test.domain.dto.BrandDTO;
 import com.jt.test.domain.vo.BrandVO;
 import com.jt.test.service.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

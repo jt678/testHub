@@ -3,7 +3,7 @@ package com.jt.test.domain.vo;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.jt.test.domain.Brand;
+import com.jt.test.domain.entity.Brand;
 import lombok.Data;
 
 /**

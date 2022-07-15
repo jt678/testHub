@@ -4,7 +4,7 @@ import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.jt.test.domain.UserInfo;
+import com.jt.test.domain.entity.UserInfo;
 import com.jt.test.domain.vo.UserVO;
 import com.jt.test.service.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**

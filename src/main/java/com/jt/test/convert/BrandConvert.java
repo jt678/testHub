@@ -1,7 +1,7 @@
 package com.jt.test.convert;
 
 
-import com.jt.test.domain.Brand;
+import com.jt.test.domain.entity.Brand;
 import com.jt.test.domain.bo.BrandBO;
 import com.jt.test.domain.dto.BrandDTO;
 import com.jt.test.domain.vo.BrandVO;

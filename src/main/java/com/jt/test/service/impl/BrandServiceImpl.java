@@ -1,7 +1,7 @@
 package com.jt.test.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.jt.test.domain.Brand;
+import com.jt.test.domain.entity.Brand;
 import com.jt.test.service.BrandService;
 import com.jt.test.mapper.BrandMapper;
 import org.springframework.stereotype.Service;

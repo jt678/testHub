@@ -1,7 +1,7 @@
 package com.jt.test.junitTest;
 import com.alibaba.fastjson.JSONObject;
 import com.jt.test.TestApplication;
-import com.jt.test.domain.Brand;
+import com.jt.test.domain.entity.Brand;
 import com.jt.test.service.BrandService;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -2,8 +2,8 @@ package com.jt.test.junitTest.java8Test;
 
 import com.alibaba.fastjson.JSON;
 import com.jt.test.TestApplication;
-import com.jt.test.domain.Brand;
-import com.jt.test.domain.entity.User;
+import com.jt.test.domain.entity.Brand;
+import com.jt.test.domain.vo.User;
 import com.jt.test.service.BrandService;
 import org.apache.commons.compress.utils.Lists;
 import org.junit.After;

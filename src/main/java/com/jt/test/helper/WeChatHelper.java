@@ -3,7 +3,7 @@ package com.jt.test.helper;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.jt.test.domain.UserInfo;
+import com.jt.test.domain.entity.UserInfo;
 import com.jt.test.domain.vo.UserVO;
 import com.jt.test.service.UserInfoService;
 import com.jt.test.utils.WxMessageUtils;

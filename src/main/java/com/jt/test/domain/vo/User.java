@@ -1,4 +1,4 @@
-package com.jt.test.domain.entity;
+package com.jt.test.domain.vo;
 
 import lombok.Data;
 

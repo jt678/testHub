@@ -1,7 +1,7 @@
 package com.jt.test.junitTest;
 
 import com.jt.test.common.Person;
-import com.jt.test.domain.entity.User;
+import com.jt.test.domain.vo.User;
 import com.jt.test.utils.myEnum.GenderEnum;
 import org.junit.Test;
 import org.springframework.stereotype.Service;
