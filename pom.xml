@@ -87,18 +87,18 @@
             </exclusions>
         </dependency>
 
-<!--        knife4j-->
+        <!--        knife4j-->
         <dependency>
-           <groupId>com.github.xiaoymin</groupId>
-        <artifactId>knife4j-spring-boot-starter</artifactId>
-        <version>${knife4j.version}</version>
-    </dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <version>${knife4j.version}</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.alibaba/easyexcel -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
-            <version>3.0.5</version>
+            <version>3.1.1</version>
         </dependency>
 
         <dependency>
@@ -124,7 +124,6 @@
         </dependency>
 
 
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -139,7 +138,7 @@
             <artifactId>spring-boot-test</artifactId>
         </dependency>
 
-<!--        aop支持-->
+        <!--        aop支持-->
         <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
         <dependency>
             <groupId>org.aspectj</groupId>
@@ -152,7 +151,7 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
-<!--        微信公众号支持-->
+        <!--        微信公众号支持-->
         <!-- https://mvnrepository.com/artifact/com.github.binarywang/weixin-java-mp -->
         <dependency>
             <groupId>com.github.binarywang</groupId>
@@ -160,11 +159,11 @@
             <version>4.3.5.B</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.github.binarywang/weixin-java-common -->
-<!--        <dependency>-->
-<!--            <groupId>com.github.binarywang</groupId>-->
-<!--            <artifactId>weixin-java-common</artifactId>-->
-<!--            <version>4.3.5.B</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.github.binarywang</groupId>-->
+        <!--            <artifactId>weixin-java-common</artifactId>-->
+        <!--            <version>4.3.5.B</version>-->
+        <!--        </dependency>-->
         <!--微信模版消息推送三方sdk-->
         <dependency>
             <groupId>com.github.binarywang</groupId>
@@ -185,8 +184,6 @@
             <scope>compile</scope>
         </dependency>
         <!--微信模版消息推送三方sdk-->
-
-
 
 
     </dependencies>
