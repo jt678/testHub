@@ -1,4 +1,4 @@
-package com.jt.test.common;
+package com.jt.test.domain;
 
 import lombok.Data;
 

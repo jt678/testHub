@@ -1,6 +1,5 @@
 package com.jt.test.domain;
 
-import com.jt.test.common.Animal;
 import lombok.Data;
 
 /**

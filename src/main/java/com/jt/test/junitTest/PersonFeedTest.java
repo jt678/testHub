@@ -1,8 +1,8 @@
 package com.jt.test.junitTest;
 
 import com.jt.test.TestApplication;
-import com.jt.test.common.Animal;
-import com.jt.test.common.Person;
+import com.jt.test.domain.Animal;
+import com.jt.test.domain.Person;
 import com.jt.test.domain.Cat;
 import com.jt.test.domain.Dog;
 import com.jt.test.domain.Duck;

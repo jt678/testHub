@@ -4,7 +4,7 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jt.test.common.HttpResult;
-import com.jt.test.domain.Role;
+import com.jt.test.domain.entity.Role;
 import com.jt.test.domain.bo.RoleBO;
 import com.jt.test.service.RoleService;
 import com.jt.test.utils.Excel.CustomCellWriteHeightConfig;

@@ -1,7 +1,7 @@
 package com.jt.test.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.jt.test.domain.Role;
+import com.jt.test.domain.entity.Role;
 import com.jt.test.service.RoleService;
 import com.jt.test.mapper.RoleMapper;
 import org.springframework.stereotype.Service;
