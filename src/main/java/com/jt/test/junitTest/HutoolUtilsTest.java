@@ -8,10 +8,13 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
 import com.jt.test.TestApplication;
+import com.jt.test.domain.entity.Brand;
+import com.jt.test.service.BrandService;
 import com.jt.test.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import sun.awt.HToolkit;
@@ -33,6 +36,8 @@ import java.util.List;
 @SpringBootTest(classes = TestApplication.class)
 @Slf4j
 public class HutoolUtilsTest {
+    @Autowired
+    private BrandService brandService;
     /**
      * HTTP UTIL
      *
@@ -69,5 +74,16 @@ public class HutoolUtilsTest {
         HttpResponse res = HttpRequest.get("baidu.com").execute();
         log.info(String.valueOf(res.getStatus()));
     }
+
+        @Test
+        public void TT(){
+            Brand brand = new Brand();
+            Brand byId = brandService.getById(1l);
+            brand.setId(1l);
+            brand.setName("tttttt");
+            brand.setFirstLetter("zzzzzz");
+            brandService.saveOrUpdate(brand);
+
+        }
 
 }

@@ -44,40 +44,4 @@ public class OrderController {
 
        return helper.list(bo);
     }
-
-    /**
-     * 导出测试
-     * @param response
-     * @throws Exception
-     */
-    @ApiOperation("导出测试")
-    @GetMapping("/export")
-    @ResponseBody
-    public void exportExcel( HttpServletRequest request ,HttpServletResponse response){
-        helper.exportExcel(response);
-    }
-
-    @ApiOperation("导入存储测试")
-    @GetMapping("/import")
-    @ResponseBody
-    public void testWriteExcel( HttpServletRequest request, HttpServletResponse response) throws Exception {
-        System.out.println("进入导入方法");
-        helper.testWriteExcel(request,response);
-    }
-
-    @ApiOperation("测试导入1")
-    @GetMapping("/easyExcel1")
-    @ResponseBody
-    public String EasyExcel(HttpServletRequest request,HttpServletResponse response,@RequestParam("file")MultipartFile file) throws IOException {
-        helper.EasyExcel(response,file);
-        return "Sucess";
-    }
-
-    @ApiOperation("测试导入3")
-    @PostMapping("/easyExcel3")
-    @ResponseBody
-    public boolean importExcel(@RequestParam("file")MultipartFile file){
-        return helper.importExcel(file);
-    }
-
 }
