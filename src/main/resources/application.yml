@@ -39,3 +39,13 @@ wechat:
   mpAppSecret: bbb816109367824cf2f96bae0e791100
   mpToken: 678911
 
+#个人设置
+jt:
+  mqtt:
+    SERVER_URI: tcp://127.0.0.1:1883
+    CLIENT_ID: ""
+    USER_NAME: ""
+    PASS_WORD: ""
+    topic: /jqtt/test
+    statusTopic: /jqtt/ssss
+
