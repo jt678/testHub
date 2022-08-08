@@ -1,7 +1,7 @@
 # 应用名称
 spring:
   application:
-    name: text
+    name: test
     admin:
       enabled: false
 # springfox使用的路径匹配是基于ant_path_matcher,spring-boot 2.6.x之后使用的是path_pattern_matcher(parser),不更改knife4j会白页错误
@@ -20,6 +20,12 @@ spring:
           log-slow-sql: true
           slow-sql-millis: 1000
           merge-sql: true
+  mail:
+    host: smtp.qq.com #smtp服务器地址
+    username: 510791331@qq.com
+    password: eqwavaphcxcebjbe #生成的授权码
+    default-encoding: utf-8
+
 
 server:
   port: 80
@@ -38,6 +44,7 @@ wechat:
   #测试号
   mpAppSecret: bbb816109367824cf2f96bae0e791100
   mpToken: 678911
+  test: hh
 
 #个人设置
 jt:
