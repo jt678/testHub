@@ -16,31 +16,11 @@ import java.util.*;
 @SpringBootApplication
 @MapperScan("com.jt.test.mapper")
 public class TestApplication {
-    private static OrderHelper helper;
-    private static Object OrderBO;
 
     public static void main(String[] args) {
-        Date now = new Date();
+
         SpringApplication.run(TestApplication.class, args);
-
-
-//            System.out.println("测试项目启动成功~!hhh"+now);
-
         Map<String,Integer> testMap = new HashMap<>();
-
-//        testMap.put("a",1);
-//        testMap.put("b",2);
-//        testMap.put("c",3);
-//        testMap.put("d",4);
-//        System.out.println("map初始化的值"+":"+testMap);
-//
-//        testMap.put("d",5);
-//
-//        testMap.put("f",10);
-//        System.out.println("d put 5,put f(之前map不存在) 10"+":"+testMap);
-//
-//        testMap.replace("g",10);
-//        System.out.println("g(不存在) replace 10"+":"+testMap);
 
         //构造map
         testMap.put("assz2",1132132145);

@@ -51,9 +51,9 @@ public class TimeTask {
             //查数据库里面在一分钟之前的数据
             ArrayList<Company> companyList = Lists.newArrayList();
             List<Company> list = companyService.list(new LambdaQueryWrapper<Company>().le(Company::getTime, fourMinBefore)
-                                                        .eq(Company::getStatus,1));
+                    .eq(Company::getStatus, 1));
             //查出来有四分钟之前的数据且status=1
-            if(list != null && !list.isEmpty()){
+            if (list != null && !list.isEmpty()) {
                 for (Company company : list) {
 
                     company.setStatus(0);
@@ -63,19 +63,20 @@ public class TimeTask {
 
                 companyService.saveOrUpdateBatch(companyList);
                 List<Company> returnList = companyService.list(new LambdaQueryWrapper<Company>().eq(Company::getStatus, 0));
-                System.out.println("这些是四分钟前在线未接收到信号的数据："+JSONObject.toJSONString(returnList));
-            }else
+                System.out.println("这些是四分钟前在线未接收到信号的数据：" + JSONObject.toJSONString(returnList));
+            } else
 
-            System.out.printf("没有四分钟前的数据");
-        }catch (Exception e){
+                System.out.printf("没有四分钟前的数据");
+        } catch (Exception e) {
 
             log.warn("定时任务失败");
             e.printStackTrace();
         }
     }
+
     @Async
 //    @Scheduled(cron = "*/10 * * * * *")
-    public void sync2(){
+    public void sync2() {
         try {
             //这种算会导致日期不同，但是时间没有相差到1分钟，就会判断成为分钟差为0，实际上已经差了x天了，而且如果小时不同，只会显示相差一分钟
             String dateStart = "2013-02-19 08:08:02";
@@ -85,10 +86,10 @@ public class TimeTask {
             Date dateStart1 = sdf.parse(dateStart);
             Date dateStop1 = sdf.parse(dateStop);
 
-            long diff = dateStop1.getTime()- dateStart1.getTime();
+            long diff = dateStop1.getTime() - dateStart1.getTime();
             long minutes = diff / (60 * 1000) % 60;
-            System.out.println("相差时间："+diff+"相差分钟："+minutes);
-        }catch (Exception e){
+            System.out.println("相差时间：" + diff + "相差分钟：" + minutes);
+        } catch (Exception e) {
 
             log.warn("定时任务2失败");
         }
