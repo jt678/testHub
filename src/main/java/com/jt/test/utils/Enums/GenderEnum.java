@@ -1,8 +1,7 @@
-package com.jt.test.utils.myEnum;
+package com.jt.test.utils.Enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Getter

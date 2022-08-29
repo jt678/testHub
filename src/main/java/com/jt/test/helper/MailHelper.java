@@ -2,7 +2,7 @@ package com.jt.test.helper;
 
 import com.jt.test.common.HttpResult;
 import com.jt.test.domain.bo.SendBO;
-import com.jt.test.utils.myEnum.Season;
+import com.jt.test.utils.Enums.Season;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

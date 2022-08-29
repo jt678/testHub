@@ -1,5 +1,5 @@
 package com.jt.test.controller;
-import com.jt.test.PushControllerUtils.SignUtil;
+import com.jt.test.utils.PushControllerUtils.SignUtil;
 import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

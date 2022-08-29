@@ -1,5 +1,5 @@
 package com.jt.test.controller;
-import com.jt.test.PushControllerUtils.GetOpenIdAct;
+import com.jt.test.utils.PushControllerUtils.GetOpenIdAct;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import me.chanjar.weixin.common.error.WxErrorException;

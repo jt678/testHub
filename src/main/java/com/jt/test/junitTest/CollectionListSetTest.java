@@ -2,7 +2,7 @@ package com.jt.test.junitTest;
 
 import com.jt.test.domain.Person;
 import com.jt.test.domain.vo.User;
-import com.jt.test.utils.myEnum.GenderEnum;
+import com.jt.test.utils.Enums.GenderEnum;
 import org.junit.Test;
 import org.springframework.stereotype.Service;
 

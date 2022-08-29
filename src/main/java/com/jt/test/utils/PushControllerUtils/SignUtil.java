@@ -1,4 +1,4 @@
-package com.jt.test.PushControllerUtils;
+package com.jt.test.utils.PushControllerUtils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

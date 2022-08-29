@@ -1,4 +1,4 @@
-package com.jt.test.PushControllerUtils;
+package com.jt.test.utils.PushControllerUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

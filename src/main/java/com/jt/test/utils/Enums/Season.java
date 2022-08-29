@@ -1,4 +1,4 @@
-package com.jt.test.utils.myEnum;
+package com.jt.test.utils.Enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
