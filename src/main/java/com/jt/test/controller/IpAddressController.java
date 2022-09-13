@@ -32,7 +32,7 @@ public class IpAddressController {
 
     @GetMapping("/ip")
     @ApiOperation("获取ip")
-    public HttpResult<String> getIp(){
+    public HttpResult<String> getIp() throws UnknownHostException {
 
 
         return  HttpResult.success(ipAddressHelper.getIp());

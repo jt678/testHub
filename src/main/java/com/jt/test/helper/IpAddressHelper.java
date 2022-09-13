@@ -29,8 +29,13 @@ public class IpAddressHelper {
     /**
      * 获取ip地址
      */
-    public String getIp() {
+    public String getIp() throws UnknownHostException {
         String hostAddress = address.getHostAddress();
+        InetAddress ip = InetAddress.getByName("www.baidu.com");
+        InetAddress ip2 = InetAddress.getByName("127.0.0.1");
+        String s1 = ip.toString();
+        String s2 = ip2.toString();
+        System.out.println("ip1:"+s1+"\n"+"ip2:"+s2);
         return  hostAddress;
     }
 
