@@ -7,9 +7,12 @@
     <resultMap id="BaseResultMap" type="com.jt.test.domain.entity.TestData">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="creatTime" column="creat_time" jdbcType="TIMESTAMP"/>
+            <result property="type" column="type" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,name
+        id,name,creat_time,
+        type
     </sql>
 </mapper>
