@@ -25,7 +25,13 @@ spring:
     username: 510791331@qq.com
     password: eqwavaphcxcebjbe #生成的授权码
     default-encoding: utf-8
-
+  elasticsearch:
+    rest:
+#      enable: ture
+      host: 192.168.186.128
+      port: 9200
+#     username: elastic
+#     password: 123456
 
 server:
   port: 80
@@ -33,14 +39,14 @@ server:
 #    context-path: /ak47
 logging:
   level:
-    com.jt.test.mapper : debug
+    com.jt.test.mapper: debug
 
 wechat:
   #正式的
-#  mpAppId: wxbaf2ce65862f52a8
+  #  mpAppId: wxbaf2ce65862f52a8
   #测试号
   mpAppId: wxf9fc4558c1f2812e
-#  mpAppSecret: 5c3bf830eb7ddb3c7383ebc81e6e55c4
+  #  mpAppSecret: 5c3bf830eb7ddb3c7383ebc81e6e55c4
   #测试号
   mpAppSecret: bbb816109367824cf2f96bae0e791100
   mpToken: 678911
