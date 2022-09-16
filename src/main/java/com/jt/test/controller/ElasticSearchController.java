@@ -1,5 +1,7 @@
 package com.jt.test.controller;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import com.alibaba.nacos.shaded.org.checkerframework.checker.units.qual.A;
 import com.jt.test.common.HttpResult;
 import com.jt.test.helper.ElasticSearchHelper;
 import io.swagger.annotations.Api;
@@ -15,70 +17,40 @@ import java.io.IOException;
  * ElasticSearchController
  *
  * @Author: jt
- * @Date: 2022/9/13 9:08
+ * @Date: 2022/9/15 15:06
  */
 @RestController
-@Api(tags = "集成es8")
-@RequestMapping("/es")
+@Api(tags = "es8搜索操作接口")
+@RequestMapping("/es/search")
 public class ElasticSearchController {
-
-
     @Autowired
     private ElasticSearchHelper esHelper;
-
     /**
-     * 创建索引
-     *
-     * @return
-     * @throws IOException
+     * 分页查询全文档
      */
-    @ApiOperation("创建索引")
-    @GetMapping("/addIndex")
-    public HttpResult addIndex(String indexName) throws IOException {
-
-        return esHelper.addIndex(indexName);
+    @GetMapping("/list")
+    @ApiOperation("分页查询全文档")
+    public HttpResult list(String indexName,Integer pageNum,Integer pageSize) throws IOException {
+        return esHelper.list(indexName,pageNum,pageSize);
     }
 
     /**
-     * 通过索引名查看索引信息
-     *
-     * @return
+     * 数据过滤，返回指定字段
      */
-    @ApiOperation("通过索引名查看索引信息")
-    @GetMapping("/getIndex")
-    public HttpResult getIndex(String indexName,String id) throws IOException {
-
-        return esHelper.getIndex(indexName,id);
+    @GetMapping("/filter")
+    @ApiOperation("数据过滤，返回指定字段")
+    public HttpResult filter(String indexName,String includeFields) throws IOException {
+        return esHelper.filter(indexName,includeFields);
     }
 
     /**
-     * 查看所有索引信息
+     * match查找，关键字分词
      */
-    @ApiOperation("查看所有索引信息")
-    @GetMapping("/getAllIndex")
-    public HttpResult getAllIndex() {
-
-        return esHelper.getAllIndex();
+    @GetMapping("/match")
+    @ApiOperation("match查找，关键字分词")
+    public HttpResult match(String indexName,String field,String keyWord,Integer pageNum, Integer pageSize) throws IOException {
+        return esHelper.match(indexName,field,keyWord,pageNum,pageSize);
     }
 
 
-    /**
-     * 批量添加文档
-     */
-    @ApiOperation("批量添加文档")
-    @GetMapping("/importDoc")
-    public HttpResult importDoc(String indexName) throws IOException {
-
-        return esHelper.importDoc(indexName);
-    }
-
-    /**
-     * 批量删除文档
-     */
-    @ApiOperation("批量删除文档")
-    @GetMapping("/deleteDoc")
-    public HttpResult deleteDoc(String ids, String indexName) throws IOException {
-
-        return esHelper.deleteDoc(ids, indexName);
-    }
 }
