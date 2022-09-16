@@ -3,15 +3,16 @@ package com.jt.test.domain.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Data;
 
 /**
- * 
  * @TableName gate_company
  */
-@TableName(value ="gate_company")
+@TableName(value = "gate_company")
 @Data
 public class Company implements Serializable {
     /**
@@ -50,6 +51,11 @@ public class Company implements Serializable {
      */
     private String sname;
 
+    /**
+     * es索引排序字段
+     */
+    private Integer orderNum;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
@@ -66,12 +72,13 @@ public class Company implements Serializable {
         }
         Company other = (Company) that;
         return (this.getCompanyId() == null ? other.getCompanyId() == null : this.getCompanyId().equals(other.getCompanyId()))
-            && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
-            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-            && (this.getIp() == null ? other.getIp() == null : this.getIp().equals(other.getIp()))
-            && (this.getTime() == null ? other.getTime() == null : this.getTime().equals(other.getTime()))
-            && (this.getSid() == null ? other.getSid() == null : this.getSid().equals(other.getSid()))
-            && (this.getSname() == null ? other.getSname() == null : this.getSname().equals(other.getSname()));
+                && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
+                && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
+                && (this.getIp() == null ? other.getIp() == null : this.getIp().equals(other.getIp()))
+                && (this.getTime() == null ? other.getTime() == null : this.getTime().equals(other.getTime()))
+                && (this.getSid() == null ? other.getSid() == null : this.getSid().equals(other.getSid()))
+                && (this.getSname() == null ? other.getSname() == null : this.getSname().equals(other.getSname()))
+                && (this.getOrderNum() == null ? other.getOrderNum() == null : this.getOrderNum().equals(other.getOrderNum()));
     }
 
     @Override
@@ -85,6 +92,7 @@ public class Company implements Serializable {
         result = prime * result + ((getTime() == null) ? 0 : getTime().hashCode());
         result = prime * result + ((getSid() == null) ? 0 : getSid().hashCode());
         result = prime * result + ((getSname() == null) ? 0 : getSname().hashCode());
+        result = prime * result + ((getOrderNum() == null) ? 0 : getOrderNum().hashCode());
         return result;
     }
 
@@ -101,6 +109,7 @@ public class Company implements Serializable {
         sb.append(", time=").append(time);
         sb.append(", sid=").append(sid);
         sb.append(", sname=").append(sname);
+        sb.append(", order=").append(orderNum);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
