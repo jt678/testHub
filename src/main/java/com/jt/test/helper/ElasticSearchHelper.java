@@ -7,6 +7,7 @@ import co.elastic.clients.elasticsearch._types.Time;
 import co.elastic.clients.elasticsearch._types.mapping.IntegerNumberProperty;
 import co.elastic.clients.elasticsearch._types.mapping.Property;
 import co.elastic.clients.elasticsearch._types.mapping.TextProperty;
+import co.elastic.clients.elasticsearch._types.query_dsl.Operator;
 import co.elastic.clients.elasticsearch.core.GetRequest;
 import co.elastic.clients.elasticsearch.core.GetResponse;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
@@ -15,8 +16,10 @@ import co.elastic.clients.elasticsearch.core.bulk.BulkOperation;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.elasticsearch.indices.*;
 import co.elastic.clients.elasticsearch.indices.get_alias.IndexAliases;
+import co.elastic.clients.json.JsonData;
 import co.elastic.clients.transport.endpoints.BooleanResponse;
 import com.jt.test.common.HttpResult;
+import com.jt.test.domain.bo.EelasticSearchBO;
 import com.jt.test.domain.entity.Company;
 import com.jt.test.domain.vo.IndexInfoVO;
 import com.jt.test.service.CompanyService;
@@ -38,6 +41,23 @@ public class ElasticSearchHelper {
     private ElasticsearchClient client;
     @Autowired
     private CompanyService companyService;
+
+    /**
+     * 命中数据封装到实体类处理
+     *
+     * @param search
+     * @return
+     */
+    private List<Company> dataHandler(SearchResponse<Company> search) {
+        List<Hit<Company>> hits = search.hits().hits();
+        List<Company> companyList = new ArrayList<>();
+        for (Hit<Company> hit : hits) {
+            Company source = hit.source();
+            companyList.add(source);
+        }
+        return companyList;
+    }
+
 
     /**
      * 判断索引是否存在
@@ -75,26 +95,27 @@ public class ElasticSearchHelper {
         //创建名为user的索引,设置主分片数量为1，副本分片数量为3；
         //CreateIndexResponse user = client.indices().create(item -> item.index(indexName));
         CreateIndexRequest.Builder request = new CreateIndexRequest.Builder().index(indexName).settings(s -> s.numberOfShards(numberOfShards).numberOfReplicas(numberOfReplicas).refreshInterval(new Time.Builder().time(refreshInterval).build()));
-        //设置mapping，这里预设3个，后面插入数据会根据数据自动改变
+        //设置mapping，这里预设3个，后面插入数据会根据数据自动填充其他字段mapping
+        //这里发现一个错误，因为创建索引时预设了三个mapping但是没有设置映射keyword，在term精确查询中需要用到.keyword，但是在后面导入数据时因为有这几个字段，所以并没有给它们再创建mapping而是用了初始化的设置所以查不到
         HashMap<String, Property> documentMap = new HashMap<>();
-        documentMap.put("companyId", Property.of(property ->
-                        property.text(TextProperty.of(textProperty ->
-                                textProperty.index(true))
-                        )
-                )
-        );
-        documentMap.put("name", Property.of(property ->
-                        property.text(TextProperty.of(textProperty ->
-                                textProperty.index(true))
-                        )
-                )
-        );
-        documentMap.put("status", Property.of(property ->
-                        property.integer(IntegerNumberProperty.of(integerNumberProperty ->
-                                integerNumberProperty.index(true))
-                        )
-                )
-        );
+//        documentMap.put("companyId", Property.of(property ->
+//                        property.text(TextProperty.of(textProperty ->
+//                                textProperty.index(true))
+//                        )
+//                )
+//        );
+//        documentMap.put("name", Property.of(property ->
+//                        property.text(TextProperty.of(textProperty ->
+//                                textProperty.index(true))
+//                        )
+//                )
+//        );
+//        documentMap.put("status", Property.of(property ->
+//                        property.integer(IntegerNumberProperty.of(integerNumberProperty ->
+//                                integerNumberProperty.index(true))
+//                        )
+//                )
+//        );
         request.mappings(m -> m.properties(documentMap));
         client.indices().create(request.build()).acknowledged();
         return HttpResult.success("索引创建成功");
@@ -242,6 +263,7 @@ public class ElasticSearchHelper {
             return HttpResult.failed("索引不存在");
         }
         //这个getRequest好像必须要带id()方法，不然会报错缺少property---id
+        //与ids方法类似，但是query方法里面封装了ids方法，可以输入多id
         if (id == null || id.equals("")) {
             return HttpResult.failed("id不能为空,请输入id");
         }
@@ -261,9 +283,11 @@ public class ElasticSearchHelper {
     /**
      * 分页查询全文档
      */
-    public HttpResult list(String indexName, Integer pageNum, Integer pageSize) throws IOException {
+    public HttpResult list(EelasticSearchBO bo) throws IOException {
+        int pageNum = bo.getPageNum().intValue();
+        int pageSize = bo.getPageSize().intValue();
         //创建搜索条件，索引名和分页,从pageNum个元素开始（起始下标为0），往后查询pageSize个元素
-        SearchRequest searchRequest = new SearchRequest.Builder().index(indexName)
+        SearchRequest searchRequest = new SearchRequest.Builder().index(bo.getIndexName())
                 .from((pageNum - 1) * pageSize).size(pageSize)
                 .sort(options -> options.field(sort -> sort.field("time").order(SortOrder.Desc)))
                 .build();
@@ -276,12 +300,12 @@ public class ElasticSearchHelper {
     /**
      * 数据过滤，返回指定字段
      */
-    public HttpResult filter(String indexName, String includeFields) throws IOException {
+    public HttpResult filter(EelasticSearchBO bo) throws IOException {
         //拆分指定字段
-        String[] includeFieldsArray = includeFields.split(",");
+        String[] includeFieldsArray = bo.getFields().split(",");
         List<String> includeFieldList = Arrays.asList(includeFieldsArray);
         //建立搜索条件
-        SearchRequest request = new SearchRequest.Builder().index(indexName)
+        SearchRequest request = new SearchRequest.Builder().index(bo.getIndexName())
                 .source(config -> config
                         .filter(filter -> filter.includes(includeFieldList))).build();
         //查询
@@ -311,17 +335,20 @@ public class ElasticSearchHelper {
     /**
      * match查找，关键字分词
      */
-    public HttpResult match(String indexName, String field, String keyWord, Integer pageNum, Integer pageSize) throws IOException {
-        if (!indexExists(indexName)) {
+    public HttpResult match(EelasticSearchBO bo) throws IOException {
+        int pageNum = bo.getPageNum().intValue();
+        int pageSize = bo.getPageSize().intValue();
+        if (!indexExists(bo.getIndexName())) {
             return HttpResult.failed("索引不存在");
         }
+        //多字段查询在qurey里面用multi_match（m->m.fields(xx,xx).query(xx).operator(Operator.xx)）
         SearchResponse<Company> search = client.search(request -> request
-                        .index(indexName)
+                        .index(bo.getIndexName())
                         .from((pageNum - 1) * pageSize).size(pageSize)
                         .sort(option -> option.field(sort -> sort.field("orderNum").order(SortOrder.Asc)))
                         .query(q -> q
                                 .match(m -> m
-                                        .field(field).query(FieldValue.of(keyWord))))
+                                        .field(bo.getField()).query(FieldValue.of(bo.getKeyWord()))))
 
                 , Company.class);
         List<Company> companyList = dataHandler(search);
@@ -329,18 +356,156 @@ public class ElasticSearchHelper {
     }
 
     /**
-     * 命中数据封装到实体类处理
-     *
-     * @param search
-     * @return
+     * Term精确查询
      */
-    private List<Company> dataHandler(SearchResponse<Company> search) {
-        List<Hit<Company>> hits = search.hits().hits();
-        List<Company> companyList = new ArrayList<>();
-        for (Hit<Company> hit : hits) {
-            Company source = hit.source();
-            companyList.add(source);
+    public HttpResult term(EelasticSearchBO bo) throws IOException {
+        //处理field,如果输入的不是keyword就转成keyword再去查询
+        String field = bo.getField();
+        String keyWord = bo.getKeyWord();
+        if (!field.endsWith(".keyword")) {
+            field = field + ".keyword";
         }
-        return companyList;
+        int pageNum = bo.getPageNum().intValue();
+        int pageSize = bo.getPageSize().intValue();
+        //这里是lambda表达式的一个约束，引用的变量必须是最终变量
+        String finalField = field;
+        //此处精确搜索需要用field.keyWord,因为存入时field进行了分词存入，无法找到此字段真实性，所以要用映射
+        SearchResponse<Company> search = client.search(request -> request
+                        .index(bo.getIndexName())
+                        .from((pageNum - 1) * pageSize).size(pageSize)
+                        .sort(option -> option.field(sort -> sort.field("orderNum").order(SortOrder.Asc)))
+                        .query(q -> q
+                                .term(t -> t
+                                        .field(finalField)
+                                        .value(FieldValue.of(keyWord))))
+                , Company.class
+        );
+        List<Company> companyList = dataHandler(search);
+        return HttpResult.success(Long.valueOf(companyList.size()), companyList);
     }
+
+    /**
+     * range范围查询（time目前不可用。报错）
+     */
+    public HttpResult range(EelasticSearchBO bo) throws IOException {
+        int pageNum = bo.getPageNum().intValue();
+        int pageSize = bo.getPageSize().intValue();
+        //此处日期目前还不可用
+        if (bo.getField().equals("time")) {
+            SearchResponse<Company> search = client.search(request -> request.index(bo.getIndexName())
+                            .from((pageNum - 1) * pageSize).size(pageSize)
+                            .query(q -> q.range(r -> r.field(bo.getField()).lt(JsonData.of("now‐2y"))))
+                            .sort(option -> option.field(sort -> sort.field("orderNum").order(SortOrder.Asc)))
+                    , Company.class);
+            List<Company> companyList = dataHandler(search);
+            return HttpResult.success(Long.valueOf(companyList.size()), companyList);
+        }
+        //如果是不是日期
+        else {
+            SearchResponse<Company> search = client.search(request -> request.index(bo.getIndexName())
+                            .from((pageNum - 1) * pageSize).size(pageSize)
+                            .query(q -> q.range(r -> r.field(bo.getField()).gte(JsonData.of(5)).lte(JsonData.of(15))))
+                            .sort(option -> option.field(sort -> sort.field("orderNum").order(SortOrder.Asc)))
+                    , Company.class);
+            List<Company> companyList = dataHandler(search);
+            return HttpResult.success(Long.valueOf(companyList.size()), companyList);
+        }
+    }
+
+    /**
+     * fuzzy模糊查询
+     */
+    public HttpResult fuzzy(EelasticSearchBO bo) throws IOException {
+        int pageNum = bo.getPageNum().intValue();
+        int pageSize = bo.getPageSize().intValue();
+        SearchResponse<Company> search = client.search(request -> request.index(bo.getIndexName())
+                        .query(q -> q.fuzzy(f -> f.field(bo.getField())
+                                .value(FieldValue.of(bo.getKeyWord()))
+                                .fuzziness("1")))
+                        .from((pageNum - 1) * pageSize).size(pageSize)
+                        .sort(option -> option.field(sort -> sort.field("orderNum").order(SortOrder.Asc)))
+                , Company.class);
+        List<Company> companyList = dataHandler(search);
+        return HttpResult.success(Long.valueOf(companyList.size()), companyList);
+    }
+
+    /**
+     * 多个id查询
+     */
+    public HttpResult ids(EelasticSearchBO bo) throws IOException {
+        int pageNum = bo.getPageNum().intValue();
+        int pageSize = bo.getPageSize().intValue();
+        //处理ids
+        List<String> idList = Arrays.asList(bo.getIds().split(","));
+        SearchResponse<Company> search = client.search(request -> request.index(bo.getIndexName())
+                        .query(q -> q.ids(id -> id.values(idList)))
+                        .from((pageNum - 1) * pageSize).size(pageSize)
+                        .sort(option -> option.field(sort -> sort.field("orderNum").order(SortOrder.Asc)))
+                , Company.class);
+        List<Company> companyList = dataHandler(search);
+        return HttpResult.success(Long.valueOf(companyList.size()), companyList);
+    }
+
+    /**
+     * （重点）高亮查询
+     */
+    public HttpResult highLight(EelasticSearchBO bo) throws IOException {
+        int pageNum = bo.getPageNum().intValue();
+        int pageSize = bo.getPageSize().intValue();
+        //处理fields
+        List<String> fieldList = Arrays.asList(bo.getFields().split(","));
+        //先进行常规搜索,且高亮字段必须为2个
+        if (indexExists(bo.getIndexName()) && fieldList.size() == 2) {
+            SearchResponse<Company> search = client.search(request -> request.index(bo.getIndexName())
+                            .query(q -> q.multiMatch(m -> m.fields(fieldList).query(bo.getKeyWord()).operator(Operator.Or)))
+                            .from((pageNum - 1) * pageSize).size(pageSize)
+                            .sort(option -> option.field(sort -> sort.field("orderNum").order(SortOrder.Asc)))
+                            //高亮
+                            .highlight(light -> light.fields(fieldList.get(0), lightfield -> lightfield)
+                                    .fields(fieldList.get(1), lightfield -> lightfield)
+                                    .preTags("<font color='red'>")
+                                    .postTags("</font>")
+                                    //多字段查询时，需要设置false
+                                    //如果置为true，除非该字段的查询结果不为空才会被高亮。它的默认值是false，意味 着它可能匹配某个字段却高亮一个不同的字段
+                                    .requireFieldMatch(false))
+                    , Company.class);
+            List<Map<String, List<String>>> companyList = new ArrayList<>();
+            List<Hit<Company>> hitList = search.hits().hits();
+            for (Hit<Company> hit : hitList) {
+                Map<String, List<String>> highlight = hit.highlight();
+                companyList.add(highlight);
+            }
+
+            return HttpResult.success(Long.valueOf(companyList.size()), companyList);
+        } else
+            return HttpResult.failed("查询失败：请确认索引是否存在，且字段必须为2个！");
+    }
+
+    /**
+     * 布尔查询Bool
+     */
+    public HttpResult booleanSearch(EelasticSearchBO bo) throws IOException {
+        int pageNum = bo.getPageNum().intValue();
+        int pageSize = bo.getPageSize().intValue();
+        SearchResponse<Company> search = client.search(request -> request.index(bo.getIndexName())
+                        .from((pageNum - 1) * pageSize).size(pageSize)
+                        .query(queryBuilder -> queryBuilder
+                                .bool(boolQueryBuilder -> boolQueryBuilder
+                                        // and
+                                        //.must(queryBuilder2 -> queryBuilder2
+                                        //        .range(rangeBuilder -> rangeBuilder.field("orderNum").gte(JsonData.of(4))))
+                                        //.must(queryBuilder2 -> queryBuilder2
+                                        //        .match(matchQueryBuilder -> matchQueryBuilder.field("name").query(FieldValue.of(keyWord))))
+                                        //or
+                                        .should(queryBuilder2 -> queryBuilder2
+                                                .range(rangeBuilder -> rangeBuilder.field("orderNum").lte(JsonData.of(4))))
+                                        .should(queryBuilder2 -> queryBuilder2
+                                                .match(matchQueryBuilder -> matchQueryBuilder.field("name").query(FieldValue.of(bo.getKeyWord()))))
+                                )
+                        )
+                , Company.class);
+        List<Company> companyList = dataHandler(search);
+        return HttpResult.success(Long.valueOf(companyList.size()), companyList);
+    }
+
 }
