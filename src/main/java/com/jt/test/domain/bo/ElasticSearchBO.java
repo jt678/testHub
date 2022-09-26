@@ -13,7 +13,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel("es搜索入参")
-public class EelasticSearchBO extends PageInfo {
+public class ElasticSearchBO extends PageInfo {
 
     @ApiModelProperty("索引名")
     private String indexName;

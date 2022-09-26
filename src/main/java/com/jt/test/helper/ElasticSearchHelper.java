@@ -4,9 +4,9 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.FieldValue;
 import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.Time;
-import co.elastic.clients.elasticsearch._types.mapping.IntegerNumberProperty;
+import co.elastic.clients.elasticsearch._types.aggregations.Aggregate;
+import co.elastic.clients.elasticsearch._types.aggregations.StatsAggregate;
 import co.elastic.clients.elasticsearch._types.mapping.Property;
-import co.elastic.clients.elasticsearch._types.mapping.TextProperty;
 import co.elastic.clients.elasticsearch._types.query_dsl.Operator;
 import co.elastic.clients.elasticsearch.core.GetRequest;
 import co.elastic.clients.elasticsearch.core.GetResponse;
@@ -19,7 +19,7 @@ import co.elastic.clients.elasticsearch.indices.get_alias.IndexAliases;
 import co.elastic.clients.json.JsonData;
 import co.elastic.clients.transport.endpoints.BooleanResponse;
 import com.jt.test.common.HttpResult;
-import com.jt.test.domain.bo.EelasticSearchBO;
+import com.jt.test.domain.bo.ElasticSearchBO;
 import com.jt.test.domain.entity.Company;
 import com.jt.test.domain.vo.IndexInfoVO;
 import com.jt.test.service.CompanyService;
@@ -212,7 +212,8 @@ public class ElasticSearchHelper {
         //创建BulkOp列表准备批量插入doc
         ArrayList<BulkOperation> bulkOperations = new ArrayList<>();
 
-//        companyList.forEach(a->bulkOperations.add(BulkOperation.of(b->b.index(c->c.id(a.getCompanyId()).document(a)))));
+        //纯链式写法
+        //companyList.forEach(a->bulkOperations.add(BulkOperation.of(b->b.index(c->c.id(a.getCompanyId()).document(a)))));
         for (Company company : companyList) {
             bulkOperations.add(BulkOperation.of(x -> x.index(y -> y.id(company.getCompanyId()).document(company))));
         }
@@ -283,7 +284,7 @@ public class ElasticSearchHelper {
     /**
      * 分页查询全文档
      */
-    public HttpResult list(EelasticSearchBO bo) throws IOException {
+    public HttpResult list(ElasticSearchBO bo) throws IOException {
         int pageNum = bo.getPageNum().intValue();
         int pageSize = bo.getPageSize().intValue();
         //创建搜索条件，索引名和分页,从pageNum个元素开始（起始下标为0），往后查询pageSize个元素
@@ -300,7 +301,7 @@ public class ElasticSearchHelper {
     /**
      * 数据过滤，返回指定字段
      */
-    public HttpResult filter(EelasticSearchBO bo) throws IOException {
+    public HttpResult filter(ElasticSearchBO bo) throws IOException {
         //拆分指定字段
         String[] includeFieldsArray = bo.getFields().split(",");
         List<String> includeFieldList = Arrays.asList(includeFieldsArray);
@@ -335,7 +336,7 @@ public class ElasticSearchHelper {
     /**
      * match查找，关键字分词
      */
-    public HttpResult match(EelasticSearchBO bo) throws IOException {
+    public HttpResult match(ElasticSearchBO bo) throws IOException {
         int pageNum = bo.getPageNum().intValue();
         int pageSize = bo.getPageSize().intValue();
         if (!indexExists(bo.getIndexName())) {
@@ -358,7 +359,7 @@ public class ElasticSearchHelper {
     /**
      * Term精确查询
      */
-    public HttpResult term(EelasticSearchBO bo) throws IOException {
+    public HttpResult term(ElasticSearchBO bo) throws IOException {
         //处理field,如果输入的不是keyword就转成keyword再去查询
         String field = bo.getField();
         String keyWord = bo.getKeyWord();
@@ -387,7 +388,7 @@ public class ElasticSearchHelper {
     /**
      * range范围查询（time目前不可用。报错）
      */
-    public HttpResult range(EelasticSearchBO bo) throws IOException {
+    public HttpResult range(ElasticSearchBO bo) throws IOException {
         int pageNum = bo.getPageNum().intValue();
         int pageSize = bo.getPageSize().intValue();
         //此处日期目前还不可用
@@ -415,13 +416,14 @@ public class ElasticSearchHelper {
     /**
      * fuzzy模糊查询
      */
-    public HttpResult fuzzy(EelasticSearchBO bo) throws IOException {
+    public HttpResult fuzzy(ElasticSearchBO bo) throws IOException {
         int pageNum = bo.getPageNum().intValue();
         int pageSize = bo.getPageSize().intValue();
         SearchResponse<Company> search = client.search(request -> request.index(bo.getIndexName())
                         .query(q -> q.fuzzy(f -> f.field(bo.getField())
                                 .value(FieldValue.of(bo.getKeyWord()))
-                                .fuzziness("1")))
+                                //这个参数表示误差长度。如果设置成auto会根据查询词的长度定义距离
+                                .fuzziness("auto")))
                         .from((pageNum - 1) * pageSize).size(pageSize)
                         .sort(option -> option.field(sort -> sort.field("orderNum").order(SortOrder.Asc)))
                 , Company.class);
@@ -432,7 +434,7 @@ public class ElasticSearchHelper {
     /**
      * 多个id查询
      */
-    public HttpResult ids(EelasticSearchBO bo) throws IOException {
+    public HttpResult ids(ElasticSearchBO bo) throws IOException {
         int pageNum = bo.getPageNum().intValue();
         int pageSize = bo.getPageSize().intValue();
         //处理ids
@@ -449,7 +451,7 @@ public class ElasticSearchHelper {
     /**
      * （重点）高亮查询
      */
-    public HttpResult highLight(EelasticSearchBO bo) throws IOException {
+    public HttpResult highLight(ElasticSearchBO bo) throws IOException {
         int pageNum = bo.getPageNum().intValue();
         int pageSize = bo.getPageSize().intValue();
         //处理fields
@@ -484,7 +486,7 @@ public class ElasticSearchHelper {
     /**
      * 布尔查询Bool
      */
-    public HttpResult booleanSearch(EelasticSearchBO bo) throws IOException {
+    public HttpResult booleanSearch(ElasticSearchBO bo) throws IOException {
         int pageNum = bo.getPageNum().intValue();
         int pageSize = bo.getPageSize().intValue();
         SearchResponse<Company> search = client.search(request -> request.index(bo.getIndexName())
@@ -508,4 +510,49 @@ public class ElasticSearchHelper {
         return HttpResult.success(Long.valueOf(companyList.size()), companyList);
     }
 
+
+//==================================================================以下是Aggregation(聚合)业务代码====================================================================================================
+
+    /**
+     * 查max,min,avg（单个）
+     */
+    public HttpResult common(ElasticSearchBO bo) throws IOException {
+        int pageNum = bo.getPageNum().intValue();
+        int pageSize = bo.getPageSize().intValue();
+        SearchResponse<Company> search = client.search(request -> request.index(bo.getIndexName())
+                        .aggregations("max", agg -> agg.max(max -> max.field(bo.getField())))
+                        .aggregations("min", agg -> agg.min(min -> min.field(bo.getField())))
+                        .aggregations("avg", agg -> agg.avg(avg -> avg.field(bo.getField())))
+                        .from((pageNum - 1) * pageSize).size(pageSize)
+                        .sort(option -> option.field(sort -> sort.field("orderNum").order(SortOrder.Asc)))
+                , Company.class);
+        Map<String, Aggregate> aggregations = search.aggregations();
+        double avg = aggregations.get("avg").avg().value();
+        double min = aggregations.get("min").min().value();
+        double max = aggregations.get("max").max().value();
+        return HttpResult.success("最小值："+min+",最大值："+max+",平均值："+avg);
+    }
+
+    /**
+     * 统计（所有的如max，min，sum都查出来）
+     */
+    public HttpResult count(ElasticSearchBO bo) throws IOException {
+        int pageNum = bo.getPageNum().intValue();
+        int pageSize = bo.getPageSize().intValue();
+        SearchResponse<Company> search = client.search(request -> request.index(bo.getIndexName())
+                        .aggregations("count", agg -> agg.stats(s -> s.field(bo.getField())))
+                        .from((pageNum - 1) * pageSize).size(pageSize)
+                        .sort(s -> s.field(sort -> sort.field("orderNum").order(SortOrder.Asc)))
+                , Company.class);
+        Map<String, Aggregate> aggregations = search.aggregations();
+        StatsAggregate all = aggregations.get("count").stats();
+
+        long count = all.count();
+        double max = all.max();
+        double min = all.min();
+        double avg = all.avg();
+        double sum = all.sum();
+
+        return HttpResult.success("max:"+max+";min:"+min+";avg:"+avg+";sum:"+sum+";count:"+count);
+    }
 }
