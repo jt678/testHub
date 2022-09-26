@@ -21,6 +21,8 @@ public class JacksonConfig {
     @Primary
     @ConditionalOnMissingBean(ObjectMapper.class)
     public ObjectMapper jacksonObjectMapper(Jackson2ObjectMapperBuilder builder) {
+        //初始化ObjectMapper，当类路径下存在Jackson2ObjMapperBuilder类时该配置会自动实例化一个objectMapper来处理json和bean的转换
+        //如果定义了上述代码便不会进行相应自动化配置
         ObjectMapper objectMapper = builder.createXmlMapper(false).build();
 
         // 全局配置序列化返回 JSON 处理
