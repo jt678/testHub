@@ -36,6 +36,11 @@ public class TestData implements Serializable {
      */
     private String type;
 
+    /**
+     * 
+     */
+    private Long otherId;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
@@ -54,7 +59,8 @@ public class TestData implements Serializable {
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getCreatTime() == null ? other.getCreatTime() == null : this.getCreatTime().equals(other.getCreatTime()))
-            && (this.getType() == null ? other.getType() == null : this.getType().equals(other.getType()));
+            && (this.getType() == null ? other.getType() == null : this.getType().equals(other.getType()))
+            && (this.getOtherId() == null ? other.getOtherId() == null : this.getOtherId().equals(other.getOtherId()));
     }
 
     @Override
@@ -65,6 +71,7 @@ public class TestData implements Serializable {
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getCreatTime() == null) ? 0 : getCreatTime().hashCode());
         result = prime * result + ((getType() == null) ? 0 : getType().hashCode());
+        result = prime * result + ((getOtherId() == null) ? 0 : getOtherId().hashCode());
         return result;
     }
 
@@ -78,6 +85,7 @@ public class TestData implements Serializable {
         sb.append(", name=").append(name);
         sb.append(", creatTime=").append(creatTime);
         sb.append(", type=").append(type);
+        sb.append(", otherId=").append(otherId);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
