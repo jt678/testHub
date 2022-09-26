@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
-
 /**
  * Java8StreamTest
  *
@@ -34,22 +33,49 @@ public class Java8StreamTest {
     private LocalDateTime start;
 
     /**
+     * stream流只能用一次测试
+     */
+    @Test
+    public void streamTest() {
+        Stream<String> stream = Stream.of("A,B,C,D".split(","));
+        //第一次使用流
+        List<String> listA = stream.filter(item -> item.equals("A") || item.equals("B")).collect(Collectors.toList());
+        listA.forEach(System.out::println);
+        //第二次使用流
+        List<String> listC = stream.filter(item -> item.equals("C")).collect(Collectors.toList());
+        listC.forEach(System.out::println);
+        //结果：stream has already been operated upon or closed
+    }
+
+    /**
+     * 测试list转流操作之后。List是否有变化
+     */
+    @Test
+    public void streamListTest() {
+        List<String> stringList = Arrays.asList("A,B,C,D".split(","));
+        //操作stream
+        Stream<String> streamAB = stringList.stream().filter(i -> i.equals("A") || i.equals("B"));
+        List<String> AList = streamAB.filter(i->i.equals("B")).collect(Collectors.toList());
+        //List还是原来的，不改变List只操作了流
+        System.out.println(AList);
+        System.out.println(stringList);
+    }
+
+    /**
      * 单类运行时间切面
      */
     @Before
-    public void init(){
+    public void init() {
         start = LocalDateTime.now();
     }
 
     @After
-    public void destory(){
+    public void destory() {
         LocalDateTime end = LocalDateTime.now();
         Duration between = Duration.between(start, end);
 
-        System.out.println("耗时："+between.toString().substring(2));
+        System.out.println("耗时：" + between.toString().substring(2));
     }
-
-
 
 
     @Autowired
@@ -65,22 +91,22 @@ public class Java8StreamTest {
      * .comparingInt/Double/Long
      */
     @Test
-    public  void comparatorTest(){
+    public void comparatorTest() {
         List<Brand> brandList1 = brandService.list();
         List<Brand> brandList2 = brandService.list();
         //将List转成流
         Stream<Brand> stream = brandList1.stream();
         //把流里的name属性重新拿出再生成一个集合
-        List<String> nameList = stream.map(item -> item.getName()).collect(Collectors.toList());
+        List<String> nameList = stream.map(Brand::getName).collect(Collectors.toList());
 //        Lists.newArrayList();
 //        Maps.newHashMap();
         Comparator<Brand> comparing1 = Comparator.comparing(Brand::getProductCount);
         Comparator<Brand> comparing2 = Comparator.comparing(Brand::getName);
         //按照ProductCount来排序，假如有相同的ProductCount再按照name来排列在后面接 reversed()方法反转排序
         Comparator<Brand> thenComparing = Comparator.comparing(Brand::getProductCount).thenComparing(Brand::getName);
-        Collections.sort(brandList1,comparing1);
-        Collections.sort(brandList2,comparing2);
-        Collections.sort(brandList1,thenComparing);
+        brandList1.sort(comparing1);
+        brandList2.sort(comparing2);
+        brandList1.sort(thenComparing);
         System.out.println(JSON.toJSONString(brandList1));
         System.out.println("==============================");
         System.out.println(JSON.toJSONString(brandList2));
@@ -93,11 +119,11 @@ public class Java8StreamTest {
 
     /**
      * 流的基本操作--（中间）filter,map,limit/(终端)collect
-     *  中间还有：sorted,distinct,skip等
-     *  终端：forEach,count等
+     * 中间还有：sorted,distinct,skip等
+     * 终端：forEach,count等
      */
     @Test
-    public void StreamBasic(){
+    public void StreamBasic() {
         //先得到数据转换成流
         Stream<Brand> brandStream = brandService.list().stream();
         //过滤状态为1的(filter)
@@ -110,7 +136,7 @@ public class Java8StreamTest {
         //List中元素字母去重输出
         List<String> words = Arrays.asList("Hello", "World");
         List<String> wordArr = words.stream()
-                .map(word->word.split(""))
+                .map(word -> word.split(""))
                 //把两个array（h e l l o ++++ w o r l d）整合到一个流
                 .flatMap(Arrays::stream)
                 .distinct()
@@ -160,17 +186,17 @@ public class Java8StreamTest {
      * stream流一些基本计算
      */
     @Test
-    public void StreamMath(){
+    public void StreamMath() {
         //使用reduce求和------reduce除了减少还有归纳的意思
         List<Integer> nums = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8);
         //reduce(identity,accumulator,combiner)
         //0---identity保存归并参数的初始值，当stream为空默认也返回此值
         //(a, b) -> a + b----accumulator（累加器）,a是上次计算的值，b是流的下一个元素的值
         //combiner 在下个方法有用
-        int sumNum = nums.stream().reduce(0,(a, b) -> a + b);
+        int sumNum = nums.stream().reduce(0, (a, b) -> a + b);
         //可以用lambda简化sum函数来实现
-        Integer sumReduce = nums.stream().reduce(0,Integer::sum);
-        System.out.println((sumNum == 36)+"And"+ (sumReduce == 36));
+        Integer sumReduce = nums.stream().reduce(0, Integer::sum);
+        System.out.println((sumNum == 36) + "And" + (sumReduce == 36));
 
         //combiner
 //        Arrays.asList(User::getName)
@@ -185,33 +211,33 @@ public class Java8StreamTest {
      * redyce方法的介绍和参数异同
      */
     @Test
-    public void streamReduce(){
+    public void streamReduce() {
         List<Integer> ages = Arrays.asList(25, 30, 45, 28, 32);
         System.out.println(ages.parallelStream().reduce(0, (a, b) -> a + b, Integer::sum));
         System.out.println(ages.stream().reduce(0, Integer::sum));
         System.out.println(ages.stream().reduce(0, (a, b) -> a + b));
         //返回的是Optional容器，要再get一次
         System.out.println(ages.parallelStream().reduce((a, b) -> a + b));
-        List<User> userList = Arrays.asList(new User("jt", 14), new User("tt", 13),new User("jj",15));
+        List<User> userList = Arrays.asList(new User("jt", 14), new User("tt", 13), new User("jj", 15));
 
         //此处的Integer::sum 就是combiner（组合器），累加函数实现运算，但是流中的包含的是User对象，但是函数的参数是数字和user对象，所以编译器无法推断参数user的类型，需要组合器
-        Integer result = userList.stream().reduce(42,(a, b) -> a - b.getAge(), Integer::sum);
+        Integer result = userList.stream().reduce(42, (a, b) -> a - b.getAge(), Integer::sum);
         //当顺序读流或累加器参数和它的实现的实现类型匹配，则不需要组合器
-        userList.stream().reduce(userList.get(0).getAge(),(a,b) -> a - b.getAge(),Integer::sum);
+        userList.stream().reduce(userList.get(0).getAge(), (a, b) -> a - b.getAge(), Integer::sum);
         System.out.println(result);
     }
 
     /**
      * 使用并行流安全问题及处理--- 慎用（1.线程不安全 2.可能引起竞态条件 3.并发可能消耗更多资源 4.公共线程池裂开。。。）
      */
-    public void parallelStreamT(){
+    public void parallelStreamT() {
         //并行流线程安全问题
         ArrayList<Integer> testList = Lists.newArrayList();
-        for (int i = 0;i<1000;i++) {
+        for (int i = 0; i < 1000; i++) {
             testList.add(i);
         }
         //1000条
-        System.out.println("实验数据条数："+testList.stream().count());
+        System.out.println("实验数据条数：" + testList.stream().count());
 //      此处是第一次尝试加锁对象错误，应该在操作List加 ---List<Integer> synchronizedTestList = Collections.synchronizedList(testList);
 
         ArrayList<Integer> targetList1 = Lists.newArrayList();
@@ -231,9 +257,9 @@ public class Java8StreamTest {
 
         //预期1000条但是实际上每次都只有960条左右，synchronized之后也是(错误原因--应该给进行添加操作的List加锁，因为是他在执行任务时把任务拆成并行),成功加锁后数据一致
         //加synchronized会保证同一时刻只能被一个线程使用
-        System.out.println("并行流实验对象1数据条数(线程不安全)："+targetList1.size()
-                +"\n"+"并行流实验对象2数据条数(synchronized)："+targetList2.size()
-                +"\n"+"并行流实验对象3数据条数(toArray)："+targetList3.size());
+        System.out.println("并行流实验对象1数据条数(线程不安全)：" + targetList1.size()
+                + "\n" + "并行流实验对象2数据条数(synchronized)：" + targetList2.size()
+                + "\n" + "并行流实验对象3数据条数(toArray)：" + targetList3.size());
     }
 
 
