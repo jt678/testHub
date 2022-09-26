@@ -4,8 +4,7 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.FieldValue;
 import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.Time;
-import co.elastic.clients.elasticsearch._types.aggregations.Aggregate;
-import co.elastic.clients.elasticsearch._types.aggregations.StatsAggregate;
+import co.elastic.clients.elasticsearch._types.aggregations.*;
 import co.elastic.clients.elasticsearch._types.mapping.Property;
 import co.elastic.clients.elasticsearch._types.query_dsl.Operator;
 import co.elastic.clients.elasticsearch.core.GetRequest;
@@ -530,7 +529,7 @@ public class ElasticSearchHelper {
         double avg = aggregations.get("avg").avg().value();
         double min = aggregations.get("min").min().value();
         double max = aggregations.get("max").max().value();
-        return HttpResult.success("最小值："+min+",最大值："+max+",平均值："+avg);
+        return HttpResult.success("最小值：" + min + ",最大值：" + max + ",平均值：" + avg);
     }
 
     /**
@@ -553,6 +552,56 @@ public class ElasticSearchHelper {
         double avg = all.avg();
         double sum = all.sum();
 
-        return HttpResult.success("max:"+max+";min:"+min+";avg:"+avg+";sum:"+sum+";count:"+count);
+        return HttpResult.success("max:" + max + ";min:" + min + ";avg:" + avg + ";sum:" + sum + ";count:" + count);
+    }
+
+    /**
+     * 分类+去重
+     *
+     * @param bo
+     * @return
+     */
+    public HttpResult group(ElasticSearchBO bo) throws IOException {
+        int pageNum = bo.getPageNum().intValue();
+        int pageSize = bo.getPageSize().intValue();
+        //todo：这里有个问题，只能取前面十个的groupby，其他的取不到，且如果用time来group不能使用.keyword要使用lterms
+        SearchResponse<Company> search = client.search(request -> request.index(bo.getIndexName())
+                        //获取字段的分类信息
+                        .aggregations("group", agg -> agg
+                                .terms(t -> t
+                                        .field(bo.getField() + ".keyword")))
+                        .from((pageNum - 1) * pageSize).size(pageSize)
+                , Company.class);
+        Aggregate group = search.aggregations().get("group");
+        StringTermsAggregate sterms = group.sterms();
+        List<StringTermsBucket> termsList = sterms.buckets().array();
+        HashMap<String, Long> hashMap = new HashMap<>();
+        for (StringTermsBucket term : termsList) {
+            hashMap.put(term.key(), term.docCount());
+        }
+
+
+//        termsList.forEach(item -> {
+//            System.out.println("key:" + item.key());
+//            System.out.println("docCount:" + item.docCount());
+//        });
+        long total = sterms.sumOtherDocCount() + termsList.size();
+        return HttpResult.success(total, hashMap);
+    }
+
+    /**
+     * 去重
+     */
+    public HttpResult cardinate(ElasticSearchBO bo) throws IOException {
+        int pageNum = bo.getPageNum().intValue();
+        int pageSize = bo.getPageSize().intValue();
+        SearchResponse<Company> search = client.search(request -> request.index(bo.getIndexName())
+                        .aggregations("cardinate", agg -> agg.cardinality(c -> c.field(bo.getField())))
+                        .from((pageNum - 1) * pageSize).size(pageSize)
+                , Company.class);
+        CardinalityAggregate cardinate = search.aggregations().get("cardinate").cardinality();
+        long value = cardinate.value();
+
+        return HttpResult.success(value);
     }
 }

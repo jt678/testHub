@@ -50,4 +50,25 @@ public class ElasticAggregationController {
         return esHelper.count(bo);
     }
 
+    /**
+     * 分类
+     * @param bo
+     * @return
+     * @throws IOException
+     */
+    @ApiOperation("分类(还有问题)")
+    @PostMapping("/group")
+    public HttpResult group(ElasticSearchBO bo) throws IOException{
+        return esHelper.group(bo);
+    }
+
+    /**
+     * 去重
+     */
+    @ApiOperation("去重")
+    @PostMapping("/cardinate")
+    public HttpResult cardinate(ElasticSearchBO bo) throws IOException {
+        return esHelper.cardinate(bo);
+    }
+
 }
