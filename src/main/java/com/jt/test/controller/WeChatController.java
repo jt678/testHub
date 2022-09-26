@@ -30,7 +30,7 @@ public class WeChatController {
     private WeChatHelper weChatHelper;
 
     @ApiOperation("对请求进行校验+自动回复")
-    @RequestMapping(value = "/wx")
+    @GetMapping(value = "/wx")
     @ResponseBody
     public void test(HttpServletRequest request, HttpServletResponse response) throws Exception {
         weChatHelper.token(request,response);
@@ -42,6 +42,7 @@ public class WeChatController {
     public HttpResult<List<UserVO>> getBaseInfo(){
 
         return HttpResult.success(weChatHelper.getBaseInfo());
+
     }
 
     @ApiOperation("根据openId+筛选人群发信息")
