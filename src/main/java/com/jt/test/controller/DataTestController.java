@@ -78,10 +78,11 @@ public class DataTestController {
      */
     @ApiOperation("测试雪花ID精度丢失问题")
     @GetMapping("/id")
-    public HttpResult<List<TestData>> SnowIdTest() {
+    public HttpResult<List<TestData>> SnowIdTest(String id) {
 
         LambdaQueryWrapper<TestData> dataLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        dataLambdaQueryWrapper.last("limit 10");
+        dataLambdaQueryWrapper.eq(TestData::getId,id);
+//        dataLambdaQueryWrapper.last("limit 10");
         List<TestData> testDataList = testDataService.list(dataLambdaQueryWrapper);
         return HttpResult.success(testDataList);
     }
