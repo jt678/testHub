@@ -1,15 +1,18 @@
 package com.jt.test.junitTest;
 
 import com.jt.test.TestApplication;
+import com.jt.test.domain.entity.UserInfo;
+import com.jt.test.service.UserInfoService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -21,6 +24,8 @@ import java.util.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestApplication.class)
 public class DateTest {
+    @Autowired
+    private UserInfoService userInfoService;
     @Test
     public void dateTest() throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -66,6 +71,48 @@ public class DateTest {
        }
     }
 
+    /**
+     * localDateTime和Date时间格式转换
+     */
+    @Test
+    public void PtDate(){
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dft = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        System.out.println(now.format(dft));
+
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        System.out.println(sdf.format(date));
+    }
+
+    /**
+     * updateById方法测试
+     */
+    @Test
+    public void UserTest(){
+        Long id = 1573233993524293634l;
+        UserInfo userInfo = new UserInfo();
+        userInfo.setId(id);
+        userInfo.setQrScene("测试1");
+
+        userInfoService.updateById(userInfo);
+        System.out.println(userInfo.getSubscribe());
+    }
+
+    /**
+     * 通过mp自动生成id，在进行完save操作后能够直接在实体直接获取到生成的id
+     */
+    @Test
+    public void UserTestAdd(){
+        UserInfo userInfo = new UserInfo();
+        userInfo.setSubscribe(4);
+        userInfo.setQrScene("测试2");
+        //此处获取不到---null
+        System.out.println(userInfo.getId());
+        //在save之前，mp自动进行了赋值,所以下面能够获取到
+        userInfoService.save(userInfo);
+        System.out.println(userInfo.getId());
+    }
 
 
 
