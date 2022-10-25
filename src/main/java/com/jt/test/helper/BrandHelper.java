@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jt.test.common.HttpResult;
 import com.jt.test.convert.BrandConvert;
+import com.jt.test.domain.Computer;
 import com.jt.test.domain.entity.Brand;
 import com.jt.test.domain.bo.BrandBO;
 import com.jt.test.domain.vo.BrandVO;
@@ -46,6 +47,8 @@ public class BrandHelper {
 //                .or()
 //                .eq(Brand::getBigPic,dto.getCondition())
 //                ;
+        new Computer("cpu","ram");
+        new Brand();
         IPage<Brand> result = brandService.page(page,lambda);
         List<Brand> records = result.getRecords();
         List<BrandVO> voList = convert.entities2vos(records);
