@@ -34,7 +34,7 @@ spring:
 #     password: 123456
 
 server:
-  port: 80
+  port: 8088
 #  servlet:
 #    context-path: /ak47
 logging:
@@ -61,4 +61,5 @@ jt:
     PASS_WORD: ""
     topic: /jqtt/test
     statusTopic: /jqtt/ssss
+    test_ip: 192.168.1.168
 

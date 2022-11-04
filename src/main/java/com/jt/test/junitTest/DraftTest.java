@@ -36,8 +36,10 @@ public class DraftTest {
     private DictService dictService;
 
     @Test
-    public void setTestIp(HttpServletResponse response) throws IOException {
-        response.sendRedirect("http://"+testIp+"/#/caLogin?code=");
+    public void setTestIp() throws IOException {
+
+        System.out.println("http://" + testIp + "/#/caLogin?code=");
+//        response.sendRedirect("http://"+testIp+"/#/caLogin?code=");
     }
 
     /**
