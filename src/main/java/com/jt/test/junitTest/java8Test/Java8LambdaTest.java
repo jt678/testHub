@@ -135,6 +135,7 @@ public class Java8LambdaTest {
         //删除集合中的元素
         list.removeIf(element -> element.equals("b"));
 
+        list.forEach(System.out::println);
         //集合排序，也可以用Comparator.comparing(Brand::getProductCount),在java8新特性流的实验中有用到过
 //       brandList.sort(((o1, o2) -> o1.getProductCount().compareTo(o2.getProductCount())));
     }

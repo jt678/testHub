@@ -2,6 +2,7 @@ package com.jt.test.junitTest;
 
 import com.jt.test.thread.WaitThread;
 import com.jt.test.thread.WorkerThread;
+import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -12,7 +13,8 @@ import java.util.concurrent.CountDownLatch;
  * @date 2022/5/10
  **/
 public class CountDownLatchTest {
-    public static void main(String[] args) {
+    @Test
+    public  void main() {
         CountDownLatch cdl = new CountDownLatch(3);
 
         WaitThread waitThread1 = new WaitThread("wait-1",cdl);

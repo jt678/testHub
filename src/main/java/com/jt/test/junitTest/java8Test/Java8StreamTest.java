@@ -115,6 +115,7 @@ public class Java8StreamTest {
         ArrayList<Brand> onlyBrandList = brandList1.stream().collect(
                 Collectors.collectingAndThen(
                         Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(Brand::getProductCount))), ArrayList::new));
+        System.out.println(onlyBrandList);
     }
 
     /**
@@ -129,7 +130,7 @@ public class Java8StreamTest {
         //过滤状态为1的(filter)
         Stream<Brand> filterBrandStream = brandStream.filter(brand -> brand.getShowStatus().equals(1));
         //取品牌名字的集合(map映射方法)，跳过第一条(skip)且只取三条(limit),再把流转成List(collect)
-        List<String> brandNameList = filterBrandStream.map(brand -> brand.getName()).skip(1).limit(3).collect(Collectors.toList());
+        List<String> brandNameList = filterBrandStream.map(Brand::getName).skip(1).limit(3).collect(Collectors.toList());
 
         System.out.println(JSON.toJSONString(brandNameList));
 
