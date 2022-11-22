@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = TestApplication.class)
-public class regularExpressionTest {
+public class RegularExpressionTest {
     /**
      * 正则表达式判断是否为手机号
      */
