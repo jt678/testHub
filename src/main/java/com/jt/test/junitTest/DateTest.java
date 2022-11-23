@@ -28,18 +28,18 @@ public class DateTest {
     private UserInfoService userInfoService;
     @Test
     public void dateTest() throws ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
-        String formatDate = simpleDateFormat.format(date);
+        String formatDate = sdf.format(date);
 
         LocalDateTime nowTime = LocalDateTime.now();
         LocalDate now = LocalDate.now();
 
 
-        Date parse = simpleDateFormat.parse("2022-05-01");
-        String formatParse = simpleDateFormat.format(parse);
+        Date parse = sdf.parse("2022-05-01 12:00:00");
+        String formatParse = sdf.format(parse);
 
-        System.out.println("new Date:"+formatDate+"\n"+"LocalDateTime:"+nowTime+"\n"+"LocalDate:"+now+"\n"+"解析时间："+formatParse);
+        System.out.println("new Date:"+formatDate+"\n"+"LocalDateTime:"+nowTime+"\n"+"LocalDate:"+now+"\n"+"解析字符串时间："+formatParse);
     }
 
     /**

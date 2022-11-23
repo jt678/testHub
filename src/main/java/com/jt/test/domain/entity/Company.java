@@ -117,9 +117,9 @@ public class Company implements Serializable {
         return sb.toString();
     }
 
-    public Company(String name, String sid, String sname) {
-        this.name = name;
-        this.sid = sid;
-        this.sname = sname;
-    }
+//    public Company(String name, String sid, String sname) {
+//        this.name = name;
+//        this.sid = sid;
+//        this.sname = sname;
+//    }
 }

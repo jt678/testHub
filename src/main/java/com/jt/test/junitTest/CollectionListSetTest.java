@@ -18,7 +18,8 @@ import java.util.stream.Collectors;
 @Service
 public class CollectionListSetTest {
 
-    public static void collectionMentor(){
+    @Test
+    public  void collectionMentor(){
         Collection<Person> personCollection = new ArrayList<>();
         //List和Collection的区别，理解：Collection是接口，包含List和Set两种实现，List下又包含了ArrayList,LinkedList,TreeList等
 //      List<Person> personCollection = new ArrayList<>();

@@ -28,6 +28,9 @@ import java.util.stream.Collectors;
 public class ListTest {
     @Autowired
     private BrandService brandService;
+    @Autowired
+    private CollectionListSetTest collectionListSetTest;
+
 
     @Test
     public void asListTest() {
@@ -41,7 +44,7 @@ public class ListTest {
         list.set(1, "A");
         list.set(2, "B");
         System.out.println(list);
-        CollectionListSetTest.collectionMentor();
+        collectionListSetTest.collectionMentor();
         System.out.println("成功执行方法并启动spring boot");
     }
 

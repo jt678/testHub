@@ -1,11 +1,14 @@
 package com.jt.test.junitTest;
 
 import cn.hutool.http.HttpRequest;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.jt.test.TestApplication;
 import com.jt.test.domain.Person;
+import com.jt.test.domain.bo.HttpRequestBO;
+import com.jt.test.domain.entity.Company;
 import com.jt.test.domain.entity.Dict;
 import com.jt.test.service.DictService;
 import com.jt.test.utils.Enums.GenderEnum;
@@ -169,5 +172,27 @@ public class DraftTest {
         String deleted = jsonObject1.getString("deleted");
         System.out.println(dutyPerson + "\n" + deleted);
 
+    }
+
+    /**
+     * Hutoool调用第三方接口特殊入参测试
+     */
+    @Test
+    public void HttpTestTwo(){
+        String url = "testUrl";
+        HttpRequestBO bo = new HttpRequestBO();
+        Company company = new Company();
+        company.setCompanyId("1225456");
+        company.setIp("192.168.1.198");
+        bo.setCompany(company);
+        bo.setPageNum(1);
+        bo.setPageSize(10);
+        String s = JSON.toJSONString(bo);
+        //成功
+        System.out.println(s);
+        HttpRequest.get(url)
+                .form(s)
+                .execute()
+                .body();
     }
 }
