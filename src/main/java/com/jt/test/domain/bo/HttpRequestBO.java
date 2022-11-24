@@ -1,5 +1,6 @@
 package com.jt.test.domain.bo;
 
+import com.jt.test.domain.SchoolInfo;
 import com.jt.test.domain.entity.Company;
 import lombok.Data;
 
@@ -16,7 +17,7 @@ public class HttpRequestBO {
     private Integer pageSize;
     private Integer pageNum;
 
-    private Company company;
-
+    private SchoolInfo schoolInfo;
+    
 
 }

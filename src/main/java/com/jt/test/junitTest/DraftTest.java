@@ -1,5 +1,6 @@
 package com.jt.test.junitTest;
 
+import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -7,8 +8,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.jt.test.TestApplication;
 import com.jt.test.domain.Person;
+import com.jt.test.domain.SchoolInfo;
 import com.jt.test.domain.bo.HttpRequestBO;
-import com.jt.test.domain.entity.Company;
 import com.jt.test.domain.entity.Dict;
 import com.jt.test.service.DictService;
 import com.jt.test.utils.Enums.GenderEnum;
@@ -39,6 +40,9 @@ import java.util.stream.Collectors;
 public class DraftTest {
     @Value("${jt.mqtt.test_ip}")
     private String testIp;
+
+    private String url = "http://192.168.1.43:8301/service/schoolInfo/test";
+    private String token = "Bearer cbc76d20-f8b3-4d23-9d3a-0972f763d019";
 
     @Autowired
     private DictService dictService;
@@ -150,13 +154,10 @@ public class DraftTest {
      */
     @Test
     public void HttpTest() {
-        String url = "http://192.168.1.43:8301/service/schoolInfo/list";
-        String token = "Bearer 9b61e339-657e-4978-b79b-e2771602b36f";
-
         HashMap<String, Object> map = new HashMap<>();
         map.put("pageNum", 1);
         map.put("pageSize", 1);
-
+        System.out.println(map);
         String body = HttpRequest.get(url)
                 .header("GatewayToken", "amllYmFvOmdhdGV3YXk6MTIzNDU2")
                 .header("Authorization", token)
@@ -175,24 +176,49 @@ public class DraftTest {
     }
 
     /**
-     * Hutoool调用第三方接口特殊入参测试
+     * Hutool入参使用json调用第三方接口
+     * 此处用body()放json
      */
     @Test
-    public void HttpTestTwo(){
-        String url = "testUrl";
-        HttpRequestBO bo = new HttpRequestBO();
-        Company company = new Company();
-        company.setCompanyId("1225456");
-        company.setIp("192.168.1.198");
-        bo.setCompany(company);
-        bo.setPageNum(1);
-        bo.setPageSize(10);
-        String s = JSON.toJSONString(bo);
-        //成功
-        System.out.println(s);
-        HttpRequest.get(url)
-                .form(s)
-                .execute()
-                .body();
+    public void HttpTestTwo() {
+        String str = "{\"pageSize\": 1, \"pageNum\": 1}";
+
+        String body = HttpRequest.get(url)
+//                .header("GatewayToken", "amllYmFvOmdhdGV3YXk6MTIzNDU2")
+                .header("Authorization", token)
+                .body(str)
+                .execute().body();
+
+        JSONObject jsonObject = JSONObject.parseObject(body);
+        System.out.println(jsonObject);
+    }
+
+    /**
+     * Hutool使用实体类转嵌套HashMap请求第三方接口（X○X），
+     * 在嵌套层name直接加当前层的名称加参数传进去就行了，无须封装多层HashMap
+     */
+    @Test
+    public void HttpTestThree() {
+//        //建立第一层hashmap和所需的入参
+//        //第一层入参
+//        HttpRequestBO bo = new HttpRequestBO();
+//        //第二层入参
+//        SchoolInfo param = new SchoolInfo();
+//        param.setSchoolName("湖南大学");
+//        String value = JSON.toJSONString(param);
+//        System.out.println(value);
+//
+//        //第一,二层hashmap
+//        HashMap<String, Object> bomap = new HashMap<>();
+        String shoolName = "湖南大学";
+
+        String body = HttpRequest.get(url)
+                .header(Header.AUTHORIZATION, token)
+                .form("pageNum", 1)
+                .form("pageSize", 2)
+                .form("param.schoolName", shoolName)
+                .execute().body();
+        JSONObject jsonObject = JSONObject.parseObject(body);
+        System.out.println(jsonObject);
     }
 }
