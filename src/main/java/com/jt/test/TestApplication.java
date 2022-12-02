@@ -1,9 +1,9 @@
 package com.jt.test;
 
-import com.jt.test.helper.OrderHelper;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.*;
 
@@ -13,8 +13,9 @@ import java.util.*;
  */
 //使用这个只能使用swagger，不能解决knife4j的问题
 //@EnableWebMvc
+@EnableScheduling
 @SpringBootApplication
-@MapperScan("com.jt.test.mapper")
+@MapperScan("com.jt.test.demo1.mapper")
 public class TestApplication {
 
     public static void main(String[] args) {

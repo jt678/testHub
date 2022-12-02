@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jt.test.mapper.CompanyMapper">
+<mapper namespace="com.jt.test.demo1.mapper.CompanyMapper">
 
-    <resultMap id="BaseResultMap" type="com.jt.test.domain.entity.Company">
+    <resultMap id="BaseResultMap" type="com.jt.test.demo1.domain.entity.Company">
             <id property="companyId" column="company_id" jdbcType="VARCHAR"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
             <result property="status" column="status" jdbcType="TINYINT"/>
