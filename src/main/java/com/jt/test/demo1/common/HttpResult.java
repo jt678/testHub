@@ -17,6 +17,9 @@ public class HttpResult<T> {
     private int code = 200;
     //private static final int FAIL_CODE = 500;
     private String msg;
+    /**
+     * 数据体
+     */
     private Object data;
     /**
      * 分页查询时的总分页数目
@@ -55,12 +58,26 @@ public class HttpResult<T> {
         this.data = data;
     }
 
+    public HttpResult() {
+        super();
+        this.code = 0;
+        this.msg = "SUCCESS";
+    }
+
+    public HttpResult(int code, String msg) {
+        super();
+        this.code = code;
+        this.msg = msg;
+    }
+
+
     /**
      * 请求成功时的响应结果
+     *
      * @return
      */
-    public static HttpResult success(){
-        HttpResult httpResult = new HttpResult();
+    public static <T> HttpResult<T> success() {
+        HttpResult<T> httpResult = new HttpResult<>();
         httpResult.setCode(httpResult.code);
         httpResult.setMsg("SUCCESS");
         return httpResult;
@@ -68,11 +85,12 @@ public class HttpResult<T> {
 
     /**
      * 请求成功时的响应结果
+     *
      * @param msg 自定义响应内容
      * @return
      */
-    public static HttpResult success(String msg){
-        HttpResult httpResult = new HttpResult();
+    public static <T> HttpResult<T> success(String msg) {
+        HttpResult<T> httpResult = new HttpResult<>();
         httpResult.setMsg(msg);
         httpResult.setCode(httpResult.code);
         return httpResult;
@@ -80,11 +98,12 @@ public class HttpResult<T> {
 
     /**
      * 请求成功时的响应结果
+     *
      * @param data 要响应的数据
      * @return
      */
-    public static HttpResult success(Object data){
-        HttpResult httpResult = new HttpResult();
+    public static <T> HttpResult<T> success(T data) {
+        HttpResult<T> httpResult = new HttpResult<>();
         httpResult.setCode(httpResult.code);
         httpResult.setMsg("SUCCESS");
         httpResult.setData(data);
@@ -93,37 +112,42 @@ public class HttpResult<T> {
 
     /**
      * 请求成功时的响应结果
+     *
      * @param total 分页数据总数
-     * @param data 自定义响应数据
+     * @param data  自定义响应数据
      * @return
      */
-    public static HttpResult success(Long total, Object data){
-        HttpResult httpResult = new HttpResult();
+    public static <T> HttpResult<T> success(Long total, T data) {
+        HttpResult<T> httpResult = new HttpResult<>();
         httpResult.setCode(httpResult.code);
-        httpResult.setMsg("success");
+        httpResult.setMsg("SUCCESS");
         httpResult.setData(data);
         httpResult.setTotal(total);
         return httpResult;
     }
 
+
+
     /**
      * 请求失败时的响应内容
+     *
      * @return
      */
-    public static HttpResult failed(){
-        HttpResult httpResult = new HttpResult();
+    public static <T> HttpResult<T> failed() {
+        HttpResult<T> httpResult = new HttpResult<>();
         httpResult.setCode(500);
-        httpResult.setMsg("soething is wrong");
+        httpResult.setMsg("SOETHING IS WRONG!");
         return httpResult;
     }
 
     /**
      * 请求失败时的相应内容
+     *
      * @param msg 自定义相应内容
      * @return
      */
-    public static HttpResult failed(String msg){
-        HttpResult httpResult = new HttpResult();
+    public static <T> HttpResult<T> failed(String msg) {
+        HttpResult<T> httpResult = new HttpResult<>();
         httpResult.setCode(500);
         httpResult.setMsg(msg);
         return httpResult;

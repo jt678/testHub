@@ -2,6 +2,7 @@ package com.jt.test.demo1.controller;
 
 import com.jt.test.demo1.common.HttpResult;
 import com.jt.test.demo1.domain.bo.RoleBO;
+import com.jt.test.demo1.domain.entity.Role;
 import com.jt.test.demo1.helper.RoleExcelHelper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * RoleExcelController
@@ -43,7 +45,7 @@ public class RoleExcelController {
     @ApiOperation("从Excel导入角色权限")
     @PostMapping("/import")
     @ResponseBody
-    public HttpResult importExcel(@RequestPart("file")MultipartFile file) throws IOException {
+    public HttpResult<List<Role>> importExcel(@RequestPart("file")MultipartFile file) throws IOException {
         return roleExcelHelper.importExcel(file);
     }
 }

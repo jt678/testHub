@@ -35,11 +35,11 @@ public class OrderHelper {
     @Autowired
     MemberPriceService memberPriceService;
 
-    public OrderVO test(Long id) {
+    public HttpResult<OrderVO> test(Long id) {
 
         Order order = service.getById(id);
         OrderVO orderVO = convert.entityToVO(order);
-        return orderVO;
+        return HttpResult.success(orderVO);
     }
 
     /**

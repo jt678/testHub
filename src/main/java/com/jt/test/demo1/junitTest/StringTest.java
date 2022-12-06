@@ -66,7 +66,6 @@ public class StringTest {
         str = String.join("---",str,baseStr,"这是join测试");
         if (!str.matches("[a-b]{2}")) {
             System.out.println(str);
-            return;
         }
     }
 

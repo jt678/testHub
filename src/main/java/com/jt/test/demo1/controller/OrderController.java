@@ -26,13 +26,23 @@ public class OrderController {
     @Autowired
     private OrderHelper helper;
 
+    /**
+     * 根据id查询订单
+     * @param id
+     * @return
+     */
     @GetMapping("/{id}")
     @ResponseBody
-    public OrderVO test(@PathVariable("id")@ApiParam("订单id")Long id){
+    public HttpResult<OrderVO> test(@PathVariable("id")@ApiParam("订单id")Long id){
 
         return helper.test(id);
     }
 
+    /**
+     * 获取订单列表
+     * @param bo
+     * @return
+     */
     @PostMapping("/list")
     @ResponseBody
     public HttpResult<List<OrderVO>>  list(OrderBO bo){

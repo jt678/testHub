@@ -68,7 +68,7 @@ public class RoleExcelHelper {
      * easyExcel导入测试
      * @return
      */
-    public HttpResult importExcel(@RequestPart("file") MultipartFile file) throws IOException {
+    public HttpResult<List<Role>> importExcel(@RequestPart("file") MultipartFile file) throws IOException {
         //需要导入的数据
         List<Role> targetList = EasyExcel.read(file.getInputStream())
                 .head(Role.class)
