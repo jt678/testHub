@@ -1,5 +1,9 @@
 package com.jt.test.demo1.helper;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jt.test.demo1.common.HttpResult;
@@ -11,11 +15,18 @@ import com.jt.test.demo1.domain.vo.OrderVO;
 
 import com.jt.test.demo1.service.MemberPriceService;
 import com.jt.test.demo1.service.OrderService;
+import com.jt.test.demo1.service.RedisService;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,11 +40,16 @@ import java.util.List;
 public class OrderHelper {
 
     @Autowired
-    OrderService service;
+    private OrderService service;
     @Autowired
-    OrderConvert convert;
+    private OrderConvert convert;
     @Autowired
-    MemberPriceService memberPriceService;
+    private MemberPriceService memberPriceService;
+    @Resource
+    private RedisTemplate<String, String> redisTemplate;
+    @Autowired
+    private RedisService redisService;
+
 
     public HttpResult<OrderVO> test(Long id) {
 
@@ -47,7 +63,7 @@ public class OrderHelper {
      *
      * @return
      */
-    public HttpResult<List<OrderVO>>  list(OrderBO bo) {
+    public HttpResult<List<OrderVO>> list(OrderBO bo) {
         List<OrderVO> voList = new ArrayList<>();
         OrderDTO orderDTO = convert.boToDto(bo);
 
@@ -56,9 +72,67 @@ public class OrderHelper {
         IPage<Order> result = service.listBySearch(page, orderDTO);
 
         List<Order> orderList = result.getRecords();
-//        List<Order> orderList = service.listBySearch();
         voList = convert.entityListToVoList(orderList);
-        return HttpResult.success(result.getTotal(),voList);
+        return HttpResult.success(result.getTotal(), voList);
     }
 
+//    /**
+//     * redis存储订单热点字段(redisTemplate)
+//     */
+//    @Transactional(rollbackFor = Exception.class)
+//    public HttpResult<List<OrderVO>> listHotPot() {
+//
+//
+//
+//        redisTemplate.opsForValue().set("测试","2022/12/6");
+//
+//
+//
+//        String test = redisTemplate.opsForValue().get("测试");
+//
+//        System.out.println(test);
+//        return HttpResult.success();
+//    }
+
+    /**
+     * redis存储订单热点字段（封装后的redisTemplate）
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResult<List<OrderVO>> listHotPot() {
+        //现在redis里面查，查不到之后查数据库
+        String hotPot = String.valueOf(redisService.get("hotSpot"));
+        if (!"null".equals(hotPot)) {
+            //转回对象
+            List<OrderVO> orderVOList = JSON.parseArray(hotPot, OrderVO.class);
+            return HttpResult.success((long) orderVOList.size(), orderVOList);
+        }
+
+        //第一次查，把查到的数据放到redis，设置一小时过期
+        QueryWrapper<Order> wrapper = new QueryWrapper<>();
+        wrapper.select("id", "member_id", "coupon_id", "order_sn", "create_time", "modify_time");
+        List<Order> list = service.list(wrapper);
+        List<OrderVO> orderVOList = convert.entityListToVoList(list);
+        String voString = JSONObject.toJSON(orderVOList).toString();
+        redisService.set("hotSpot", voString, 3600);
+        return HttpResult.success((long) orderVOList.size(), orderVOList);
+
+    }
+
+    /**
+     * 更新或新增订单---用来测redis和mysql同步的问题
+     */
+    public HttpResult saveOrUpdate(Order order) {
+        Date now = new Date();
+        Long id = order.getId();
+        if (id == null) {
+            order.setCreateTime(now);
+        } else {
+            order.setModifyTime(now);
+        }
+        //先更新db后删除缓存
+        boolean bool = service.saveOrUpdate(order);
+        redisService.del("hotSpot");
+
+        return  bool? HttpResult.success() : HttpResult.failed();
+    }
 }
