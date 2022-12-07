@@ -11,6 +11,7 @@ import com.jt.test.demo1.domain.entity.Brand;
 import com.jt.test.demo1.domain.bo.BrandBO;
 import com.jt.test.demo1.domain.vo.BrandVO;
 import com.jt.test.demo1.service.BrandService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,10 +34,12 @@ public class BrandHelper {
         //测试需求：分页按条件查询品牌，且条件有一个是复合条件
         //先拿出来所有的数据，然后分页
         IPage<Brand> page = new Page<>(bo.getPageNum(),bo.getPageSize());
-        LambdaQueryWrapper<Brand> lambda = new QueryWrapper<Brand>().lambda()
-//                .eq(Brand::getName,bo.getName())
-                .eq(Brand::getFirstLetter,bo.getFirstLetter())
-                .between(Brand::getSort,0,200);
+        LambdaQueryWrapper<Brand> lambda = new QueryWrapper<Brand>().lambda();
+        if (StringUtils.isNotEmpty(bo.getFirstLetter())){
+            //                .eq(Brand::getName,bo.getName())
+            lambda.eq(Brand::getFirstLetter,bo.getFirstLetter())
+                    .between(Brand::getSort,0,200);
+        }
 //        BrandDTO dto = convert.bo2Dto(bo);
 //        LambdaQueryWrapper<Brand> lambda = new QueryWrapper<Brand>().lambda()
 //                .eq(Brand::getLogo,dto.getCondition())
@@ -54,7 +57,5 @@ public class BrandHelper {
         List<BrandVO> voList = convert.entities2vos(records);
         return HttpResult.success(result.getTotal(),voList);
     }
-    /**
-     *
-     */
+
 }
