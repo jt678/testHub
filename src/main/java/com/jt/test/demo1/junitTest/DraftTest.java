@@ -2,6 +2,8 @@ package com.jt.test.demo1.junitTest;
 
 import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpUtil;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -19,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.DigestUtils;
 
@@ -38,14 +41,14 @@ import java.util.stream.Collectors;
  * @Author: jt
  * @Date: 2022/10/25 15:21
  */
-@RunWith(SpringRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = TestApplication.class)
 public class DraftTest {
     @Value("${jt.mqtt.test_ip}")
     private String testIp;
 
     private String url = "http://192.168.1.43:8301/service/schoolInfo/test";
-    private String token = "Bearer cbc76d20-f8b3-4d23-9d3a-0972f763d019";
+    private String token = "bearer 29903f04-1023-4406-95e7-87a9e2837ab9";
 
     @Autowired
     private DictService dictService;
@@ -356,13 +359,29 @@ public class DraftTest {
         List<Role> roleList = roleService.list();
         List<Role> nullRoleList = roleList.stream().filter(item -> item.getSort() == 21312321).collect(Collectors.toList());
         IntSummaryStatistics collect = nullRoleList.stream().collect(Collectors.summarizingInt(Role::getSort));
-        System.out.println("MAX:"+collect.getMax());
-        System.out.println("MIN:"+collect.getMin());
-        System.out.println("AVG:"+collect.getAverage());
-        System.out.println("SUM:"+collect.getSum());
-        System.out.println("COUNT:"+collect.getCount());
+        System.out.println("MAX:" + collect.getMax());
+        System.out.println("MIN:" + collect.getMin());
+        System.out.println("AVG:" + collect.getAverage());
+        System.out.println("SUM:" + collect.getSum());
+        System.out.println("COUNT:" + collect.getCount());
 
     }
 
+    /**
+     * 访问45服务器上接口
+     */
+    @Test
+    public void remoteApi(){
+        String url = "http://192.168.1.45:8301/service/external/assessment/assessmentList";
+        HashMap<String, Object> param = new HashMap<>();
+        //能直接放参数，原分页参数是在自己定义的queryRequest下的，我们直接用k-v形式传不用管数据结构也能完成
+        param.put("pageNum",1);
+        param.put("pageSize",10);
+        param.put("idCode","JCY-430900-00114");
+        String result = HttpRequest.post(url).form(param).execute().body();
+        String jsonString = JSON.toJSONString(result);
+        System.out.println(jsonString);
+
+    }
 
 }
