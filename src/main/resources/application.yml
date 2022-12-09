@@ -18,17 +18,19 @@ spring:
 #  spring.redis.lettuce.pool.max-wait = 5s
 #  spring.redis.lettuce.pool.min-idle = 0
 #  spring.redis.lettuce.pool.time-between-eviction-runs = 1s
+#  如果以@Configuration配置了redis连接，这里则不会读取
   redis:
-    database: 2
+    database: 3
     host: 192.168.1.198
     port: 6379
+    timeout: 5000
     lettuce:
       pool:
         min-idle: 0
         max-idle: 24
         max-active: 30
         max-wait: 5s
-    timeout: 5000
+
   datasource:
     druid:
       url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true&rewriteBatchedStatements=true
