@@ -384,4 +384,46 @@ public class DraftTest {
 
     }
 
+    /**
+     * hashMap测试
+     */
+    @Test
+    public void HashMapTest(){
+        Map<String,Integer> testMap = new HashMap<>();
+
+        //构造map
+        testMap.put("assz2",1132132145);
+        testMap.put("bxz12",2321355);
+        testMap.put("xzaaw2c",3321567);
+        testMap.put("ddsaz23",432131);
+        testMap.put("sadz21",213213);
+        testMap.put("sadaz2231",32144519);
+        testMap.put("zxpi12",30009321);
+        testMap.put("samkoo12",2131245);
+
+        //String的hashCode检测，发现string重写了hashcode是根据字符数组的内容来确定hashcode，内容一样hashcode也一样，但是用==比较内存地址会不同，返回false
+        String i = "h312213312aaaa";
+        int i1 = i.hashCode();
+
+        String j = "h312213312aaaa";
+        int i2 = j.hashCode();
+
+//        三种视图
+        Set<Map.Entry<String, Integer>> entrySet = testMap.entrySet();
+        Set<String> keySet = testMap.keySet();
+        Collection<Integer> values = testMap.values();
+
+//        迭代器
+        Iterator<Map.Entry<String, Integer>> entryIterator = entrySet.iterator();
+        Iterator<String> keyIterator = keySet.iterator();
+        Iterator<Integer> valuesIterator = values.iterator();
+
+        while (entryIterator.hasNext()){
+            Map.Entry<String, Integer> mapEntry = entryIterator.next();
+            System.out.println("K: "+mapEntry.getKey()+" "+"V:"+mapEntry.getValue());
+        }
+        testMap.clear();
+
+    }
+
 }

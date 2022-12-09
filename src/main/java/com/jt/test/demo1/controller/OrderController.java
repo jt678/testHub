@@ -23,8 +23,8 @@ import java.util.List;
  * @date 2022/3/8
  **/
 @Controller
-@RequestMapping("/test")
-@Api(tags = "测试")
+@RequestMapping("/order")
+@Api(tags = "订单测试")
 public class OrderController {
     @Autowired
     private OrderHelper helper;
