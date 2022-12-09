@@ -1,0 +1,4 @@
+#添加spi加载,已不推荐，spring官方自动配置类全限定名在META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports. 中@AutoConfiguration
+# 测试加载ApplicationContextInitializer
+#org.springframework.context.ApplicationContextInitializer=\
+#com.jt.test.demo1.MyApplicationContextInitializer

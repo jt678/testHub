@@ -1,13 +1,34 @@
+server:
+  port: 8088
+#  servlet:
+#    context-path: /ak47
 # 应用名称
 spring:
   application:
-    name: test
+    name: testHub
     admin:
       enabled: false
 # springfox使用的路径匹配是基于ant_path_matcher,spring-boot 2.6.x之后使用的是path_pattern_matcher(parser),不更改knife4j会白页错误
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+#  生产环境：
+#  spring.redis.lettuce.pool.max-active = 大于cpu*2
+#  spring.redis.lettuce.pool.max-idle = cpu*2
+#  spring.redis.lettuce.pool.max-wait = 5s
+#  spring.redis.lettuce.pool.min-idle = 0
+#  spring.redis.lettuce.pool.time-between-eviction-runs = 1s
+  redis:
+    database: 2
+    host: 192.168.1.198
+    port: 6379
+    lettuce:
+      pool:
+        min-idle: 0
+        max-idle: 24
+        max-active: 30
+        max-wait: 5s
+    timeout: 5000
   datasource:
     druid:
       url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true&rewriteBatchedStatements=true
@@ -30,16 +51,28 @@ spring:
 #      enable: ture
       host: 192.168.186.128
       port: 9200
-#     username: elastic
-#     password: 123456
-
-server:
-  port: 8088
-#  servlet:
-#    context-path: /ak47
+  banner:
+    image:
+      width: 50
+      height: 25
+      bitdepth: 4
+# mybatis
+mybatis-plus:
+  type-aliases-package: com.jt.test.demo1.domain.entity
+  # 指定mybatis映射文件的位置
+  mapper-locations: classpath:mapper/*.xml,classpath:mapper/*/*.xml,classpath:mapper/*/*/*.xml
+  configuration:
+    # 开启驼峰命名转换（开启后需要注意字段写法，不然返回值为null）
+    map-underscore-to-camel-case: true
+    # 替换log实现类
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    db-config:
+      id-type: AUTO
+#打印sql
 logging:
   level:
-    com.jt.test.mapper: debug
+    com.jt.test.demo1.mapper: debug
 
 wechat:
   #正式的
@@ -62,4 +95,3 @@ jt:
     topic: /jqtt/test
     statusTopic: /jqtt/ssss
     test_ip: 192.168.1.168
-
