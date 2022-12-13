@@ -240,6 +240,7 @@ public class Java8StreamTest {
     /**
      * 使用并行流安全问题及处理--- 慎用（1.线程不安全 2.可能引起竞态条件 3.并发可能消耗更多资源 4.公共线程池裂开。。。）
      */
+    @Test
     public void parallelStreamT() {
         //并行流线程安全问题
         ArrayList<Integer> testList = Lists.newArrayList();
