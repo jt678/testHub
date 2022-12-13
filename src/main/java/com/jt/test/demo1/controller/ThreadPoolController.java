@@ -61,4 +61,15 @@ public class ThreadPoolController {
        sumList.addAll(List2);
        return sumList;
     }
+    @GetMapping("/hello")
+    @ApiOperation("测试线程池（Configuration+bean+Async注解实现）--目前测试可用")
+    public void hello(){
+        threadHelper.hello();
+    }
+
+    @GetMapping("/hello2")
+    @ApiOperation("测试线程池（单例获取）--测试不可用，没什么实际应用")
+    public void hello2(){
+        threadHelper.hello2();
+    }
 }
