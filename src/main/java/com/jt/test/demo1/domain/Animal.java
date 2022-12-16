@@ -9,7 +9,7 @@ import lombok.Data;
  * @date 2022/5/13
  **/
 @Data
-public class Animal {
+public abstract class Animal {
     /**
      * 动物名
      */
