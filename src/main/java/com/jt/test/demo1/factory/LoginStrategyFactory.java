@@ -5,17 +5,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * LoginStrategyFactory
+ * 登录策略工厂，在这里根据type得到对应的实例，调用不通的处理逻辑
  *
+ * 其实就是个启动类，继承了CommandLineRuner，类似ApplicationRunner，进启动类的run方法一看就明了了
  * @Author: jt
  * @Date: 2022/12/15 16:36
  */
-@SpringBootApplication
+@Component
 public class LoginStrategyFactory implements CommandLineRunner {
 
     /**
@@ -49,6 +52,8 @@ public class LoginStrategyFactory implements CommandLineRunner {
         // 将所有登录策略组装进策略列表中
         for (String bean : beans) {
             Object beanObj = applicationContext.getBean(bean);
+            //instanceof关键字用来判断beanObj对象是否是LoginStrategy类的实例，这个关键字别忘记了
+
             if (beanObj instanceof LoginStrategy){
                 strategies.add((LoginStrategy)beanObj);
             }
