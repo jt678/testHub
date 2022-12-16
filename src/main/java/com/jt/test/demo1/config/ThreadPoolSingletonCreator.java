@@ -16,7 +16,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Slf4j
 @EnableAsync
 public class ThreadPoolSingletonCreator {
-    private static ThreadPoolTaskExecutor executor;
+    private volatile static  ThreadPoolTaskExecutor executor;
     //核心线程数量
     private static final int corePoolSize = 2;
     //最大线程数量
