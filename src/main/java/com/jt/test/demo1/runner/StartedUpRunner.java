@@ -1,4 +1,4 @@
-package com.jt.test.demo1;
+package com.jt.test.demo1.runner;
 
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
