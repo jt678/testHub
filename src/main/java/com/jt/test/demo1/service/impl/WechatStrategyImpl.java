@@ -14,7 +14,7 @@ public class WechatStrategyImpl implements LoginStrategy {
     @Override
     public String login(String username, String password) {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

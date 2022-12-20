@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
  * @Date: 2022/12/15 16:43
  */
 @Service
-public class QQStrategyImpl implements LoginStrategy {
+public class QqStrategyImpl implements LoginStrategy {
     @Override
     public String login(String username, String password) {
 
         try {
             //模拟登录处理逻辑花费时间
-            Thread.sleep(1000);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
