@@ -14,6 +14,7 @@ import com.jt.test.demo1.domain.Person;
 import com.jt.test.demo1.domain.entity.Dict;
 import com.jt.test.demo1.domain.entity.Role;
 import com.jt.test.demo1.service.DictService;
+import com.jt.test.demo1.service.LoginStrategy;
 import com.jt.test.demo1.service.RoleService;
 import com.jt.test.demo1.utils.Enums.GenderEnum;
 import org.junit.Test;
@@ -56,6 +57,14 @@ public class DraftTest {
     private RoleService roleService;
     @Autowired
     private RoleConvert roleConvert;
+
+    //如果Autowired和map使用的话呢，它将它bean的名称作为key,所有的bean作为value.
+    @Autowired
+    private Map<String, LoginStrategy> animalBeanMap = new HashMap<>();
+
+    //当Autowired注解在Collection 上时，会将所申明类的所有实现类都放在那个指定的Collection里.
+    @Autowired
+    private List<LoginStrategy> animalList = new ArrayList<>();
 
     @Test
     public void setTestIp() throws IOException {
@@ -426,4 +435,16 @@ public class DraftTest {
 
     }
 
+    /**
+     * Autowired配合list和map测试
+     */
+    @Test
+    public void AutowiredTest(){
+        LoginStrategy qqStrategyImpl = animalBeanMap.get("qqStrategyImpl");
+        LoginStrategy wechatStrategyImpl = animalBeanMap.get("wechatStrategyImpl");
+        String qqLogin = qqStrategyImpl.login("test", "test");
+        String wechatLogin = wechatStrategyImpl.login("test", "test");
+        System.out.println(qqLogin + "\n"+wechatLogin);
+        animalList.forEach(System.out::println);
+    }
 }
