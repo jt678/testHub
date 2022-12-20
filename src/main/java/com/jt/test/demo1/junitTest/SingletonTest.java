@@ -1,9 +1,6 @@
 package com.jt.test.demo1.junitTest;
 
-import com.jt.test.demo1.common.SingletonHungary;
-import com.jt.test.demo1.common.SingletonLazy1;
-import com.jt.test.demo1.common.SingletonLazy2;
-import com.jt.test.demo1.common.SingletonLazy3;
+import com.jt.test.demo1.service.impl.SingletonLazy1;
 import org.junit.Test;
 
 /**
@@ -28,6 +25,11 @@ public class SingletonTest {
 class TestThread extends Thread {
     @Override
     public void run() {
-        System.out.println("线程："+TestThread.currentThread().getName()+"hash:"+ SingletonHungary.getInstance().hashCode());
+        SingletonLazy1 instance = SingletonLazy1.getInstance();
+
+        if (instance==null){
+            System.out.println("未获取到实例");
+        }
+        System.out.println("线程："+TestThread.currentThread().getName()+"hash:"+ instance.hashCode());
     }
 }

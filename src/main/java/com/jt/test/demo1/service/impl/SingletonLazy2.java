@@ -1,4 +1,4 @@
-package com.jt.test.demo1.common;
+package com.jt.test.demo1.service.impl;
 
 /**
  * SingletonLazy2

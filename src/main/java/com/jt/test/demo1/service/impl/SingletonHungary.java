@@ -1,4 +1,4 @@
-package com.jt.test.demo1.common;
+package com.jt.test.demo1.service.impl;
 
 /**
  * SingletonHungary
@@ -20,8 +20,11 @@ public class SingletonHungary {
     private SingletonHungary(){
 
     }
+
     //这里Junit测试时没有东西打印
-    // 猜测是因为静态变量在程序开启时会加载，在这时候如上代码new 了一个SingletonHungary，后面在调用的时候就直接返回这个值了,但是test并没有启动整个程序
+    //猜测是因为静态变量在程序开启时会加载，在这时候如上代码new 了一个SingletonHungary，后面在调用的时候就直接返回这个值了,但是test并没有启动整个程序
+    //启动后调用接口显示正常,hashcode相同
+
     public static SingletonHungary getInstance(){
 
         return singletonHungary;
