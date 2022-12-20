@@ -48,6 +48,7 @@ public class LoginStrategyFactory implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        //ComponentScan注解扫描到的bean，class会立刻被解析成BeanDefinition，添加进BeanDefinitionNames属性中
         String[] beans = applicationContext.getBeanDefinitionNames();
         // 将所有登录策略组装进策略列表中
         for (String bean : beans) {
