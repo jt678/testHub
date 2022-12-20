@@ -24,8 +24,11 @@ import java.time.Duration;
  * ClassName: RedisConfig <br/>
  * Description: redis连接配置类 <br/>
  */
+//configuration让spring来扫描产生bean
 @Configuration
 public class BaseRedisConfig {
+    //bean注解生成并返回一些实体对象，并且可以定义一些配置，项目其他地方直接autowired注入即可用
+    //在引入第三方libraray的方法，他源代码中没有@component注解，我们也不能加，所以用configuration+bean的方式调用
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisSerializer<Object> serializer = redisSerializer();

@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * ClassName: RedisServiceImpl <br/>
  * Description: redis操作的具体时间类 <br/>
+ * 相当于在redisTemplate上再封装了一层操作，自定义自己的方法
  */
 public class RedisServiceImpl implements RedisService {
     @Resource
