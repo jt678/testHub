@@ -1,6 +1,9 @@
 package com.jt.test.demo1.junitTest;
 
+import com.jt.test.demo1.service.impl.SingletonHungary;
 import com.jt.test.demo1.service.impl.SingletonLazy1;
+import com.jt.test.demo1.service.impl.SingletonLazy2;
+import com.jt.test.demo1.service.impl.SingletonLazy3;
 import org.junit.Test;
 
 /**
