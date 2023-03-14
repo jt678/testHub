@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jt.test.demo1.mapper.JgjWaybillMapper">
+
+    <resultMap id="BaseResultMap" type="com.jt.test.demo1.domain.entity.JgjWaybill">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+            <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
+            <result property="operater" column="operater" jdbcType="BIGINT"/>
+            <result property="truckCode" column="truck_code" jdbcType="VARCHAR"/>
+            <result property="placeOriginName" column="place_origin_name" jdbcType="VARCHAR"/>
+            <result property="placeOrigin" column="place_origin" jdbcType="VARCHAR"/>
+            <result property="destinationName" column="destination_name" jdbcType="VARCHAR"/>
+            <result property="destination" column="destination" jdbcType="VARCHAR"/>
+            <result property="actualCargo" column="actual_cargo" jdbcType="VARCHAR"/>
+            <result property="weight" column="weight" jdbcType="VARCHAR"/>
+            <result property="driverName" column="driver_name" jdbcType="VARCHAR"/>
+            <result property="driverCardCode" column="driver_card_code" jdbcType="VARCHAR"/>
+            <result property="phone" column="phone" jdbcType="VARCHAR"/>
+            <result property="fileId" column="file_id" jdbcType="VARCHAR"/>
+            <result property="escortName" column="escort_name" jdbcType="VARCHAR"/>
+            <result property="escortCardCode" column="escort_card_code" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+            <result property="recordStatus" column="record_status" jdbcType="INTEGER"/>
+            <result property="arrivalTime" column="arrival_time" jdbcType="VARCHAR"/>
+            <result property="pointId" column="point_id" jdbcType="BIGINT"/>
+            <result property="pointName" column="point_name" jdbcType="VARCHAR"/>
+            <result property="localPicid" column="local_picid" jdbcType="VARCHAR"/>
+            <result property="nautica" column="nautica" jdbcType="VARCHAR"/>
+            <result property="realNumber" column="real_number" jdbcType="VARCHAR"/>
+            <result property="arrivalStartTime" column="arrival_start_time" jdbcType="VARCHAR"/>
+            <result property="arrivalEndTime" column="arrival_end_time" jdbcType="VARCHAR"/>
+            <result property="vehicleName" column="vehicle_name" jdbcType="VARCHAR"/>
+            <result property="type" column="type" jdbcType="INTEGER"/>
+            <result property="actualName" column="actual_name" jdbcType="VARCHAR"/>
+            <result property="driverName2" column="driver_name_2" jdbcType="VARCHAR"/>
+            <result property="driverCardCode2" column="driver_card_code_2" jdbcType="VARCHAR"/>
+            <result property="phone2" column="phone_2" jdbcType="VARCHAR"/>
+            <result property="driverName3" column="driver_name_3" jdbcType="VARCHAR"/>
+            <result property="driverCardCode3" column="driver_card_code_3" jdbcType="VARCHAR"/>
+            <result property="phone3" column="phone_3" jdbcType="VARCHAR"/>
+            <result property="carType" column="car_type" jdbcType="INTEGER"/>
+            <result property="carHolder" column="car_holder" jdbcType="VARCHAR"/>
+            <result property="jiebo" column="jiebo" jdbcType="TINYINT"/>
+            <result property="checkStatus" column="check_status" jdbcType="TINYINT"/>
+            <result property="carrierCargo" column="carrier_cargo" jdbcType="INTEGER"/>
+            <result property="free" column="free" jdbcType="INTEGER"/>
+            <result property="checkId" column="check_id" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,gmt_create,gmt_modified,
+        operater,truck_code,place_origin_name,
+        place_origin,destination_name,destination,
+        actual_cargo,weight,driver_name,
+        driver_card_code,phone,file_id,
+        escort_name,escort_card_code,status,
+        user_id,record_status,arrival_time,
+        point_id,point_name,local_picid,
+        nautica,real_number,arrival_start_time,
+        arrival_end_time,vehicle_name,type,
+        actual_name,driver_name_2,driver_card_code_2,
+        phone_2,driver_name_3,driver_card_code_3,
+        phone_3,car_type,car_holder,
+        jiebo,check_status,carrier_cargo,
+        free,check_id
+    </sql>
+</mapper>
