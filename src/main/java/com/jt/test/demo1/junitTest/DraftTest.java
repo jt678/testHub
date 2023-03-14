@@ -1,27 +1,30 @@
 package com.jt.test.demo1.junitTest;
 
+import cn.hutool.core.lang.hash.Hash;
 import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.nacos.shaded.org.checkerframework.checker.units.qual.A;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.jt.test.TestApplication;
 import com.jt.test.demo1.convert.RoleConvert;
 import com.jt.test.demo1.domain.Dog;
 import com.jt.test.demo1.domain.Person;
 import com.jt.test.demo1.domain.entity.Dict;
+import com.jt.test.demo1.domain.entity.Order;
 import com.jt.test.demo1.domain.entity.Role;
-import com.jt.test.demo1.service.DictService;
-import com.jt.test.demo1.service.LoginStrategy;
-import com.jt.test.demo1.service.RoleService;
+import com.jt.test.demo1.service.*;
 import com.jt.test.demo1.utils.Enums.GenderEnum;
+import com.sun.xml.internal.fastinfoset.util.StringArray;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.DigestUtils;
@@ -31,6 +34,15 @@ import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.WeekFields;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -65,6 +77,11 @@ public class DraftTest {
     //当Autowired注解在Collection 上时，会将所申明类的所有实现类都放在那个指定的Collection里.
     @Autowired
     private List<LoginStrategy> animalList = new ArrayList<>();
+    @Autowired
+    private RedisService redisService;
+
+    @Autowired
+    private OrderService orderService;
 
     @Test
     public void setTestIp() throws IOException {
@@ -125,6 +142,7 @@ public class DraftTest {
         hashMap.put("1", kid);
         hashMap.put("2", mother);
         hashMap.put("3", mother);
+        //forEachRemaining输出集合中剩下的元素
         hashMap.values().stream().spliterator().forEachRemaining(System.out::println);
 
         hashSet.add(kid);
@@ -245,18 +263,18 @@ public class DraftTest {
 
         //造测试数据
         List<Role> testDataList = new ArrayList<>();
-        Role adminT = new Role(null, "超级管理员t", "测试数据1", 0, null, 1, 1);
-        Role orderT = new Role(null, "订单管理员t", "测试数据2", 0, null, 1, 2);
-
-        Role shop = new Role(null, "商品管理员", "只能查看及操作商品", 0, null, 1, 0);
-        Role order = new Role(null, "订单管理员", "只能查看及操作订单", 0, null, 0, 0);
-        Role admin = new Role(null, "超级管理员", "拥有所有查看和操作功能", 0, null, 1, 0);
-        testDataList.add(shop);
-        testDataList.add(order);
-        testDataList.add(admin);
-
-        testDataList.add(adminT);
-        testDataList.add(orderT);
+////        Role adminT = new Role(null, "超级管理员t", "测试数据1", 0, null, 1, 1);
+////        Role orderT = new Role(null, "订单管理员t", "测试数据2", 0, null, 1, 2);
+////
+////        Role shop = new Role(null, "商品管理员", "只能查看及操作商品", 0, null, 1, 0);
+////        Role order = new Role(null, "订单管理员", "只能查看及操作订单", 0, null, 0, 0);
+////        Role admin = new Role(null, "超级管理员", "拥有所有查看和操作功能", 0, null, 1, 0);
+//        testDataList.add(shop);
+//        testDataList.add(order);
+//        testDataList.add(admin);
+//
+//        testDataList.add(adminT);
+//        testDataList.add(orderT);
 
         //筛选数据库里name与测试数据中name相同的数据
         List<Role> sameRoleList = new ArrayList<>();
@@ -446,5 +464,75 @@ public class DraftTest {
         String wechatLogin = wechatStrategyImpl.login("test", "test");
         System.out.println(qqLogin + "\n"+wechatLogin);
         animalList.forEach(System.out::println);
+    }
+
+    /**
+     * redis哨兵集群连接测试
+     */
+    @Test
+    public void  RedisSentinelTest(){
+        redisService.set("message","update from springboot when 82 sentinel is down");
+        redisService.set("message2","update from springboot when 82 redis is down!!");
+
+        System.out.println("set成功");
+    }
+
+    /**
+     * 比较集合中isEmpty和size==0的区别
+     */
+    @Test
+    public void EmptySizeDiffTest(){
+        List<String> list = new ArrayList<>();
+        list.add("");
+        //通过源码可知，时间复杂度为O(1)
+        boolean empty = list.isEmpty();
+        //不确定，时间复杂度最坏为O(n)
+        boolean ifEmpty = list.size() == 0;
+        System.out.println(empty);
+        System.out.println(ifEmpty);
+        
+    }
+
+    @Test
+    public void DateTest() throws ParseException {
+//        WeekFields weekFields= WeekFields.ISO;
+//        //获取到时间
+//        LocalDate now = LocalDate.now();
+//        //周一记作第一天
+//        LocalDate mondayDate = now.with(weekFields.dayOfWeek(), 1L);
+//        LocalTime time = LocalTime.of(0, 0, 0);
+//        //根据时间算出那一周的第一天
+//        LocalDateTime monday = LocalDateTime.of(mondayDate, time);
+//        System.out.println(monday);
+
+//        String year = "2023";
+//        String startDateStr = year + "-01-01";
+//        String endDateStr = year + "-12-31";
+//        int weekOfYear = 53;
+//        for (int i = 0; i < weekOfYear; i++) {
+//            DateTimeFormatter formatter  = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//            LocalDate startLocalDate = LocalDate.parse(startDateStr,formatter);
+//            if (i == 0){
+//                i+=1;
+//            }
+//            LocalDate endLocalDate = startLocalDate.plusWeeks(1).minusDays(1);
+//            startDateStr = endLocalDate.plusDays(1).toString();
+//            System.out.println(startLocalDate);
+//            System.out.println(endLocalDate);
+//        }
+
+//        LocalDateTime firstDayOfMonth = LocalDateTime.of(LocalDate.from(LocalDateTime.now().with(TemporalAdjusters.firstDayOfMonth())), LocalTime.MIN);
+//        LocalDateTime lastDayOfMonth = LocalDateTime.of(LocalDate.from(LocalDateTime.now().with(TemporalAdjusters.lastDayOfMonth())), LocalTime.MAX);
+//        LambdaQueryWrapper<Order> query = new LambdaQueryWrapper<>();
+//        query.ge(Order::getCreateTime,firstDayOfMonth);
+//        query.le(Order::getCreateTime,lastDayOfMonth);
+//        List<Order> list = orderService.list(query);
+//        System.out.println(list);
+//        System.out.println(firstDayOfMonth);
+//        System.out.println(lastDayOfMonth);
+        String date = "2023-01-07 13:20:00";
+        String[] dateArray = date.split(" ");
+        String time = Arrays.asList(dateArray).get(1);
+        System.out.println(time);
     }
 }
