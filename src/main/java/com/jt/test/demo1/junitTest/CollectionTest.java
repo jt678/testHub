@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.jt.test.TestApplication;
 import com.jt.test.demo1.domain.entity.Brand;
 import com.jt.test.demo1.domain.entity.UserInfo;
+import com.jt.test.demo1.helper.CollectionListSetHelper;
 import com.jt.test.demo1.service.BrandService;
 import com.jt.test.demo1.service.UserInfoService;
 import org.junit.Test;
@@ -16,33 +17,32 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * AsListTest
- *
+ * CollectionTest
+ * 集合测试
  * @author jt
  * @date 2022/4/8
  **/
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestApplication.class)
-public class ListTest {
+public class CollectionTest {
     @Autowired
     private BrandService brandService;
     @Autowired
-    private CollectionListSetTest collectionListSetTest;
+    private CollectionListSetHelper collectionListSetHelper;
 
 
     @Test
     public void asListTest() {
 
         String[] strings = {"1", "2", "3"};
-        if (
-                Arrays.stream(strings).iterator().hasNext()) {
+        if (Arrays.stream(strings).iterator().hasNext()) {
 
         }
         List list = Arrays.asList();
         list.set(1, "A");
         list.set(2, "B");
         System.out.println(list);
-        collectionListSetTest.collectionMentor();
+        collectionListSetHelper.collectionMentor();
         System.out.println("成功执行方法并启动spring boot");
     }
 
@@ -79,22 +79,25 @@ public class ListTest {
         //删除错误，下标不准确
         List<Long> idList = brandService.list().stream().map(Brand::getId).collect(Collectors.toList());
         for (int i = 0; i < idList.size(); i++) {
-            if (idList.get(i) > 0) {
-                idList.remove(i);
+            //第二次for循环在这里会发现本来应该取下标为1，即第2个元素，结果由于第一次循环删除了一个元素，导致现在直接取到原本的第3个元素，第2个元素就没有删除，以此类推。
+            Long deleteTarget = idList.get(i);
+            if (deleteTarget > 0) {
+                idList.remove(deleteTarget);
             }
         }
+        //预期情况是list里的值都大于零应该会把list清空了，结果并没有
         System.out.println("idList:" + JSONObject.toJSONString(idList));
 
-        //报错
+
         List<Integer> statusList = brandService.list().stream().map(Brand::getFactoryStatus).collect(Collectors.toList());
+        //报错
 //        for (Integer status : statusList) {
 //            if (! status.equals(3)){
 //                statusList.remove(status);
 //            }
 //        }
-//        System.out.println("statusList"+JSONObject.toJSONString(statusList));
 
-        //迭代器删除成功
+        //迭代器删除成功-----使用list.removeIf(status -> !status.equals(3))也能成功，它内部也使用了迭代器来删除
         Iterator<Integer> iterator = statusList.iterator();
         while (iterator.hasNext()) {
 
@@ -156,7 +159,6 @@ public class ListTest {
     public void idTest(){
         try {
             UserInfo userInfo = new UserInfo();
-
             userInfo.setSubscribe(3);
             service.save(userInfo);
             System.out.println("成功");
@@ -164,6 +166,34 @@ public class ListTest {
             e.printStackTrace();
         }
     }
+
+    /**
+     * forEachRemaining测试，输出剩余元素
+     */
+    @Test
+    public void forEachRemainingTest(){
+        //给list赋值
+        Set<Integer> set = new HashSet<>();
+        for (int i = 0; i < 10; i++) {
+            set.add(i);
+        }
+        Iterator<Integer> setIterator = set.iterator();
+        //因为set没有下标，使用外部变量i来控制循环
+        int i = 0;
+        while (setIterator.hasNext()){
+            System.out.println(setIterator.next());
+            i++;
+            if (i == 5){
+                break;
+            }
+        }
+        System.out.println("接下来是forEachRemaining输出");
+//        注意转换成流之后取新的iterator会失效
+//        set.stream().iterator().forEachRemaining(System.out::println);
+        System.out.println("==================================");
+        setIterator.forEachRemaining(System.out::println);
+    }
+
 
 
 }
