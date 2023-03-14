@@ -2,6 +2,7 @@ package com.jt.test.demo1.controller;
 
 import com.jt.test.demo1.common.HttpResult;
 import com.jt.test.demo1.domain.bo.RoleBO;
+import com.jt.test.demo1.domain.entity.JgjAppuser;
 import com.jt.test.demo1.domain.entity.Role;
 import com.jt.test.demo1.helper.RoleExcelHelper;
 import io.swagger.annotations.Api;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -45,7 +47,17 @@ public class RoleExcelController {
     @ApiOperation("从Excel导入角色权限")
     @PostMapping("/import")
     @ResponseBody
-    public HttpResult<List<Role>> importExcel(@RequestPart("file")MultipartFile file) throws IOException {
+    public HttpResult<List<JgjAppuser>> importExcel(@RequestPart("file")MultipartFile file) throws IOException {
         return roleExcelHelper.importExcel(file);
+    }
+
+    /**
+     * EasyExcel导出郴州2月份所有大队下面的清单
+     */
+    @ApiOperation("导出郴州2月份所有大队下面的清单")
+    @PostMapping("/exportForFeb")
+    @ResponseBody
+    public HttpResult exportForFeb(HttpServletResponse res) throws IOException, ParseException {
+        return roleExcelHelper.exportForFeb(res);
     }
 }
