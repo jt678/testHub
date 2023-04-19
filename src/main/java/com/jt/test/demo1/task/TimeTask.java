@@ -94,4 +94,15 @@ public class TimeTask {
             log.warn("定时任务2失败");
         }
     }
+
+    /**
+     * 定时任务测试
+     */
+    @Async
+    @Scheduled(cron = "* 40-59 * * * ?")
+    public void taskTest(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH::mm:ss");
+        String now = sdf.format(new Date());
+        System.out.println("现在的时间是" + now);
+    }
 }
