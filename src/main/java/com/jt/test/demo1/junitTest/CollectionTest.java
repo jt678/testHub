@@ -115,11 +115,22 @@ public class CollectionTest {
      */
     @Test
     public void intersection(){
-        List<String> listA = Arrays.asList("1st,2nd,3rd,4th".split(","));
-        List<String> listB = Arrays.asList("1st,2nd,4th".split(","));
+        //如果不用此方式，直接Arrays.asList会报UnsupportedOperationException
+        List<String> listA = new ArrayList<>(Arrays.asList("1st,2nd,3rd,4th".split(",")));
+        List<String> listB = new ArrayList<>(Arrays.asList("1st,2nd,4th,5th,6th".split(",")));
         //方法一：通过retainAll直接过滤
-        listB.retainAll(listA);
-        System.out.println("第一次过滤："+listB);
+        List<String> listIn = new ArrayList<>();
+        listIn.addAll(listA);
+
+        listIn.retainAll(listB);
+        //A有的，B没有的，取消关联
+        listA.removeAll(listIn);
+        System.out.println("取消关联"+listA);
+        //B有的,A没有的，增加关联
+        listB.removeAll(listIn);
+        System.out.println("建立关联" + listB);
+
+        System.out.println("第一次过滤："+listA);
         //方法二:通过流的filter过滤掉数据
         List<String> listC = Arrays.asList("1st,2nd,4th".split(","));
         List<String> listD = listC.stream().filter(item -> listA.contains(item)).collect(Collectors.toList());
