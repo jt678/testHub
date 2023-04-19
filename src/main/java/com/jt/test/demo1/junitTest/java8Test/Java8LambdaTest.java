@@ -1,7 +1,12 @@
 package com.jt.test.demo1.junitTest.java8Test;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.lang.hash.Hash;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jt.test.TestApplication;
 import com.jt.test.demo1.common.*;
+import com.jt.test.demo1.domain.entity.Brand;
 import com.jt.test.demo1.service.BrandService;
 import org.apache.commons.compress.utils.Lists;
 import org.junit.Test;
@@ -11,6 +16,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 /**
@@ -139,4 +149,26 @@ public class Java8LambdaTest {
         //集合排序，也可以用Comparator.comparing(Brand::getProductCount),在java8新特性流的实验中有用到过
 //       brandList.sort(((o1, o2) -> o1.getProductCount().compareTo(o2.getProductCount())));
     }
+
+    /**
+     * 测试写法去除list元素有什么不同
+     */
+    @Test
+    public void differentOfQuery(){
+        List<Brand> brandList = brandService.list();
+        //删除list中first_letter为A和N的元素
+        //1.lambda写法
+        ArrayList<String> anList = new ArrayList<>();
+        anList.add("A");
+        anList.add("N");
+        brandList.removeIf(e->anList.contains(e.getFirstLetter()));
+        System.out.println("通过λ写法除去A，N之后"+brandList);
+        //把查出来的list转map
+        Map<Long, Brand> map;
+        if (CollectionUtil.isNotEmpty(brandList)){
+            map=brandList.stream().collect(Collectors.toMap(Brand::getId, Function.identity(),(e1, e2)->e1));
+            System.out.println(map.get(brandList.get(0).getId()));
+        }
+    }
+
 }
