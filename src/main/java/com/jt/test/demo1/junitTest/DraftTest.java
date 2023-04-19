@@ -1,9 +1,7 @@
 package com.jt.test.demo1.junitTest;
 
-import cn.hutool.core.lang.hash.Hash;
 import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -18,31 +16,24 @@ import com.jt.test.demo1.domain.entity.Order;
 import com.jt.test.demo1.domain.entity.Role;
 import com.jt.test.demo1.service.*;
 import com.jt.test.demo1.utils.Enums.GenderEnum;
-import com.sun.xml.internal.fastinfoset.util.StringArray;
+import com.sun.org.apache.xerces.internal.xs.StringList;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Month;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjusters;
-import java.time.temporal.WeekFields;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -381,7 +372,7 @@ public class DraftTest {
      * Int会返回-2147483648和2147483647============》int的取值范围-2147483648——2147483647
      */
     @Test
-    public void mathTest(){
+    public void mathTest() {
 
         List<Role> roleList = roleService.list();
         List<Role> nullRoleList = roleList.stream().filter(item -> item.getSort() == 21312321).collect(Collectors.toList());
@@ -398,13 +389,13 @@ public class DraftTest {
      * 访问45服务器上接口
      */
     @Test
-    public void remoteApi(){
+    public void remoteApi() {
         String url = "http://192.168.1.45:8301/service/external/assessment/assessmentList";
         HashMap<String, Object> param = new HashMap<>();
         //能直接放参数，原分页参数是在自己定义的queryRequest下的，我们直接用k-v形式传不用管数据结构也能完成
-        param.put("pageNum",1);
-        param.put("pageSize",10);
-        param.put("idCode","JCY-430900-00114");
+        param.put("pageNum", 1);
+        param.put("pageSize", 10);
+        param.put("idCode", "JCY-430900-00114");
         String result = HttpRequest.post(url).form(param).execute().body();
         String jsonString = JSON.toJSONString(result);
         System.out.println(jsonString);
@@ -415,18 +406,18 @@ public class DraftTest {
      * hashMap测试
      */
     @Test
-    public void HashMapTest(){
-        Map<String,Integer> testMap = new HashMap<>();
+    public void HashMapTest() {
+        Map<String, Integer> testMap = new HashMap<>();
 
         //构造map
-        testMap.put("assz2",1132132145);
-        testMap.put("bxz12",2321355);
-        testMap.put("xzaaw2c",3321567);
-        testMap.put("ddsaz23",432131);
-        testMap.put("sadz21",213213);
-        testMap.put("sadaz2231",32144519);
-        testMap.put("zxpi12",30009321);
-        testMap.put("samkoo12",2131245);
+        testMap.put("assz2", 1132132145);
+        testMap.put("bxz12", 2321355);
+        testMap.put("xzaaw2c", 3321567);
+        testMap.put("ddsaz23", 432131);
+        testMap.put("sadz21", 213213);
+        testMap.put("sadaz2231", 32144519);
+        testMap.put("zxpi12", 30009321);
+        testMap.put("samkoo12", 2131245);
 
         //String的hashCode检测，发现string重写了hashcode是根据字符数组的内容来确定hashcode，内容一样hashcode也一样，但是用==比较内存地址会不同，返回false
         String i = "h312213312aaaa";
@@ -445,9 +436,9 @@ public class DraftTest {
         Iterator<String> keyIterator = keySet.iterator();
         Iterator<Integer> valuesIterator = values.iterator();
 
-        while (entryIterator.hasNext()){
+        while (entryIterator.hasNext()) {
             Map.Entry<String, Integer> mapEntry = entryIterator.next();
-            System.out.println("K: "+mapEntry.getKey()+" "+"V:"+mapEntry.getValue());
+            System.out.println("K: " + mapEntry.getKey() + " " + "V:" + mapEntry.getValue());
         }
         testMap.clear();
 
@@ -457,12 +448,12 @@ public class DraftTest {
      * Autowired配合list和map测试
      */
     @Test
-    public void AutowiredTest(){
+    public void AutowiredTest() {
         LoginStrategy qqStrategyImpl = animalBeanMap.get("qqStrategyImpl");
         LoginStrategy wechatStrategyImpl = animalBeanMap.get("wechatStrategyImpl");
         String qqLogin = qqStrategyImpl.login("test", "test");
         String wechatLogin = wechatStrategyImpl.login("test", "test");
-        System.out.println(qqLogin + "\n"+wechatLogin);
+        System.out.println(qqLogin + "\n" + wechatLogin);
         animalList.forEach(System.out::println);
     }
 
@@ -470,9 +461,9 @@ public class DraftTest {
      * redis哨兵集群连接测试
      */
     @Test
-    public void  RedisSentinelTest(){
-        redisService.set("message","update from springboot when 82 sentinel is down");
-        redisService.set("message2","update from springboot when 82 redis is down!!");
+    public void RedisSentinelTest() {
+        redisService.set("message", "update from springboot when 82 sentinel is down");
+        redisService.set("message2", "update from springboot when 82 redis is down!!");
 
         System.out.println("set成功");
     }
@@ -481,7 +472,7 @@ public class DraftTest {
      * 比较集合中isEmpty和size==0的区别
      */
     @Test
-    public void EmptySizeDiffTest(){
+    public void EmptySizeDiffTest() {
         List<String> list = new ArrayList<>();
         list.add("");
         //通过源码可知，时间复杂度为O(1)
@@ -490,7 +481,7 @@ public class DraftTest {
         boolean ifEmpty = list.size() == 0;
         System.out.println(empty);
         System.out.println(ifEmpty);
-        
+
     }
 
     @Test
@@ -535,4 +526,126 @@ public class DraftTest {
         String time = Arrays.asList(dateArray).get(1);
         System.out.println(time);
     }
+
+    /**
+     * 获取jar包所在路径
+     */
+    @Test
+    public void getJarPath() {
+        String path = System.getProperty("user.dir");
+        System.out.println(path);
+    }
+
+
+    /**
+     * 幻读问题
+     */
+    @Test
+    @Transactional(rollbackFor = Exception.class)
+    public void readTest() {
+        Order before = orderService.list().get(0);
+        System.out.println("旧note" + before.getNote());
+        before.setNote("哈哈哈，脏数据2");
+        //1.更新之后去查
+        Long id = before.getId();
+        orderService.updateById(before);
+        Order after = orderService.getById(id);
+        System.out.println("新note" + after.getNote());
+
+        //2.new
+        Order order1 = new Order();
+        order1.setNote("哈哈哈2");
+        order1.setMemberId(1l);
+        orderService.save(order1);
+
+        System.out.println(order1.getId());
+    }
+
+    /**
+     * List和Array
+     */
+    @Test
+    public void StringTest() {
+        String[] strings1 = {"1", "2", "3"};
+
+        List<String> stringList = new ArrayList<>(Arrays.asList(strings1));
+        stringList.add("4");
+        String[] strings2 = stringList.toArray(strings1);
+        System.out.println(strings2);
+    }
+
+    /**
+     * 遇到list ADD null的问题
+     */
+    @Test
+    public void listAdd() {
+        ArrayList list = new ArrayList();
+
+        list.add(roleService.getById(112));
+        list.add(roleService.getById(113));
+        list.removeIf(Objects::isNull);
+        System.out.println(list);
+        List<String> strList = new ArrayList<>();
+        if (!list.isEmpty()) {
+
+            String listStr = JSON.toJSONString(list);
+            System.out.println(listStr);
+            strList.add(listStr);
+            System.out.println(strList);
+        }
+
+
+//        if (!listStr.contains("[]")) {
+//            strList.add(listStr);
+//        }
+//        System.out.println(strList);
+    }
+
+
+    /**
+     * File方法
+     */
+    @Test
+    public void dateTest() {
+        File file = new File("D:\\Users\\Desktop\\test\\test.txt");
+        if (file.exists()){
+            System.out.println(file.getName());
+        }else {
+            File directory = new File(file.getParent());
+            directory.mkdirs();
+            System.out.println("创建文件夹" + directory.getName());
+            //创建文件
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println("创建文件"+file.getName());
+        }
+    }
+
+    /**
+     * writer写入文件
+     */
+    @Test
+    public void write(){
+        File file = new File("D:\\Users\\Desktop\\test", "write.txt");
+        if (file.exists()){
+            file.delete();
+        }
+        try {
+            //创建此文件
+            file.createNewFile();
+            //把file文件转成file输出流放入输出writer里，再放入输出writer里,这个地方设置勒文件流字符集为16进制，但是形成txt打开还是utf-8的
+            PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF-16")));
+//            printWriter.print();
+            printWriter.println("使用printWriter");
+            char[] Array = {'使','用','a','b','c'};
+            printWriter.print(Array);
+            printWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
