@@ -1,8 +1,10 @@
 package com.jt.test.demo1.junitTest.java8Test;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.jt.test.TestApplication;
 import com.jt.test.demo1.domain.entity.Brand;
+import com.jt.test.demo1.domain.vo.Address;
 import com.jt.test.demo1.domain.vo.User;
 import com.jt.test.demo1.service.BrandService;
 import org.apache.commons.compress.utils.Lists;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.sql.Array;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -38,8 +41,8 @@ public class Java8StreamTest {
     @Test
     public void streamTest() {
         List<String> stringList = Arrays.asList("A,B,C,D".split(","));
-        List<String> A = stringList.stream().filter(item->"a".equalsIgnoreCase(item)||"b".equalsIgnoreCase(item)).collect(Collectors.toList());
-        List<String> B = stringList.stream().filter(item->"c".equalsIgnoreCase(item)||"d".equalsIgnoreCase(item)).collect(Collectors.toList());
+        List<String> A = stringList.stream().filter(item -> "a".equalsIgnoreCase(item) || "b".equalsIgnoreCase(item)).collect(Collectors.toList());
+        List<String> B = stringList.stream().filter(item -> "c".equalsIgnoreCase(item) || "d".equalsIgnoreCase(item)).collect(Collectors.toList());
         System.out.println(A);
         System.out.println(B);
 
@@ -53,7 +56,6 @@ public class Java8StreamTest {
         //结果：stream has already been operated upon or closed
 
 
-
     }
 
     /**
@@ -64,7 +66,7 @@ public class Java8StreamTest {
         List<String> stringList = Arrays.asList("A,B,C,D".split(","));
         //操作stream
         Stream<String> streamAB = stringList.stream().filter(i -> i.equals("A") || i.equals("B"));
-        List<String> AList = streamAB.filter(i->i.equals("B")).collect(Collectors.toList());
+        List<String> AList = streamAB.filter(i -> i.equals("B")).collect(Collectors.toList());
         //List还是原来的，不改变List只操作了流
         System.out.println(AList);
         System.out.println(stringList);
@@ -273,5 +275,22 @@ public class Java8StreamTest {
                 + "\n" + "并行流实验对象3数据条数(toArray)：" + targetList3.size());
     }
 
+    /**
+     * map获取多个字段并且过滤为null的数据
+     */
+    @Test
+    public void StreamTest() {
+        List<Brand> brandList = brandService.list();
+        List<String> testList = brandList.stream().map(brand -> brand.getFirstLetter() + "/" + brand.getName())
+                .flatMap(brand -> Arrays.stream(brand.split("/")))
+                .filter(item->!item.equals("null"))
+                .collect(Collectors.toList());
+        for (Brand brand : brandList) {
+            brand.setBigPic("1");
+        }
+        brandService.updateBatchById(brandList);
+
+        System.out.println(testList);
+    }
 
 }
