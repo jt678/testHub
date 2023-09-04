@@ -85,8 +85,8 @@ public class CountDownLatchTest {
             }
             System.out.println("第二个人到达,count=0，跑了"+j+"圈");
             try {
-                Thread.sleep(10000);
-                System.out.println("考生2跑完休息了10秒");
+                Thread.sleep(5000);
+                System.out.println("考生2跑完休息了5秒");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -100,7 +100,7 @@ public class CountDownLatchTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("所有考生到达,跑步结束");
+        System.out.println("所有考生到达,跑步结束"+sdf.format(new Date()));
 
 
     }
