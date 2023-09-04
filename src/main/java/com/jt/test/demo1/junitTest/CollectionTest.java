@@ -35,12 +35,9 @@ public class CollectionTest {
     public void asListTest() {
 
         String[] strings = {"1", "2", "3"};
-        if (Arrays.stream(strings).iterator().hasNext()) {
 
-        }
-        List list = Arrays.asList();
-        list.set(1, "A");
-        list.set(2, "B");
+        List<String> list = new ArrayList<>(Arrays.asList(strings));
+
         System.out.println(list);
         collectionListSetHelper.collectionMentor();
         System.out.println("成功执行方法并启动spring boot");
@@ -51,9 +48,8 @@ public class CollectionTest {
      * Collections.reverse的使用
      */
     public void listReverse() {
-        List list = new ArrayList();
         String[] strings = new String[]{"1", "2", "3", "4"};
-        list.addAll(Arrays.asList(strings));
+        List<String> list = new ArrayList<>(Arrays.asList(strings));
         System.out.println("原数组：" + list + "\n");
         Collections.reverse(list);
         System.out.println("反序输出数组：" + list + "\n");
