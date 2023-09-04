@@ -2,12 +2,14 @@ package com.jt.test.demo1.helper;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.nacos.shaded.org.checkerframework.checker.units.qual.A;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jt.test.demo1.common.HttpResult;
 import com.jt.test.demo1.convert.OrderConvert;
+import com.jt.test.demo1.domain.entity.MemberPrice;
 import com.jt.test.demo1.domain.entity.Order;
 import com.jt.test.demo1.domain.bo.OrderBO;
 import com.jt.test.demo1.domain.dto.OrderDTO;
@@ -21,6 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +32,8 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * OrderHelper
@@ -44,11 +50,13 @@ public class OrderHelper {
     @Autowired
     private OrderConvert convert;
     @Autowired
-    private MemberPriceService memberPriceService;
+    private  MemberPriceHelper memberPriceHelper;
     @Resource
     private RedisTemplate<String, String> redisTemplate;
     @Autowired
     private RedisService redisService;
+    @Autowired
+    private MemberPriceService memberPriceService;
 
 
     public HttpResult<OrderVO> test(Long id) {
@@ -135,4 +143,31 @@ public class OrderHelper {
 
         return  bool? HttpResult.success() : HttpResult.failed();
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void rollBackTest(Order order) throws ExecutionException, InterruptedException {
+        //测试Note为null出现NPE问题
+        service.save(order);
+        if (order.getNote().equals("hh")){
+            order.setNote("changed");
+            service.updateById(order);
+        }
+        //异步新增另外一条数据
+         this.dealMemberPrice1(order);
+         memberPriceHelper.dealMemberPrice2(order);
+
+    }
+
+    @Async
+    @Transactional(rollbackFor = Exception.class)
+    public Future<String> dealMemberPrice1(Order order) {
+        if (order.getOrderSn().equals("c1")){
+            MemberPrice memberPrice = new MemberPrice();
+            memberPrice.setMemberLevelName("c1等级");
+            memberPriceService.save(memberPrice);
+        }
+        return new AsyncResult<String>("异步任务1完成");
+    }
+
+
 }
