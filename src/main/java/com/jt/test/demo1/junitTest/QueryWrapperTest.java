@@ -61,6 +61,9 @@ public class QueryWrapperTest {
         //exist
         LambdaQueryWrapper<Brand> existQuery = new QueryWrapper<Brand>().lambda();
         List<String> stringList = Arrays.asList(s);
+        //正确写法应该如下
+//        service.list(existQuery.exists("select id from table where condition = sth"));
+        //此处是in，不推荐，可以用exist替代，效率会比in高
         List<Brand> existList = service.list(existQuery.in(Brand::getFirstLetter, stringList));
         for (Brand brand:existList) {
             System.out.println(brand.getName());
