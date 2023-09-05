@@ -1,10 +1,9 @@
 package com.jt.test.demo1.factory;
 
-import com.jt.test.demo1.service.LoginStrategy;
+import com.jt.test.demo1.service.factory.LoginStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -75,5 +76,18 @@ public class OrderController {
     @ApiOperation("更新或新增订单")
     public HttpResult saveOrUpdate(Order order){
         return helper.saveOrUpdate(order);
+    }
+
+    @GetMapping("/rollBackTest")
+    @ResponseBody
+    @ApiOperation("异步回滚测试")
+    public HttpResult rollBackTest(Order order) {
+        try {
+            helper.rollBackTest(order);
+            return HttpResult.success("修改成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResult.failed("修改失败");
+        }
     }
 }

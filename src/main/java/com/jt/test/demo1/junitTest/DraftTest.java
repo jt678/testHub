@@ -5,7 +5,6 @@ import cn.hutool.http.HttpRequest;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.nacos.shaded.org.checkerframework.checker.units.qual.A;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.jt.test.TestApplication;
 import com.jt.test.demo1.convert.RoleConvert;
@@ -14,9 +13,11 @@ import com.jt.test.demo1.domain.Person;
 import com.jt.test.demo1.domain.entity.Dict;
 import com.jt.test.demo1.domain.entity.Order;
 import com.jt.test.demo1.domain.entity.Role;
+import com.jt.test.demo1.domain.vo.User;
 import com.jt.test.demo1.service.*;
+import com.jt.test.demo1.service.factory.LoginStrategy;
 import com.jt.test.demo1.utils.Enums.GenderEnum;
-import com.sun.org.apache.xerces.internal.xs.StringList;
+import com.jt.test.demo1.utils.SqlIdUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +34,8 @@ import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-
-//import static org.apache.commons.codec.digest.DigestUtils.md5;
 
 /**
  * 测试草稿
@@ -342,13 +340,17 @@ public class DraftTest {
         if (optionalSum.isPresent()) {
             sum = optionalSum.get();
         }
-
-        if (sum != null && sum.isInfinite()) {
+        //平均值取小数点后两位，
+        if (sum != null && !sum.isInfinite()) {
             BigDecimal decimalSum = BigDecimal.valueOf(sum);
             BigDecimal decimalSize = BigDecimal.valueOf(dogAgeList.size());
             DecimalFormat df = new DecimalFormat("#.00");
 
-            avg = Double.valueOf(df.format(decimalSum.divide(decimalSize)));
+            try {
+                avg = Double.valueOf(df.format(decimalSum.divide(decimalSize)));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
         }
         if (optionalMax.isPresent()) {
             max = optionalMax.get();
@@ -571,7 +573,7 @@ public class DraftTest {
         List<String> stringList = new ArrayList<>(Arrays.asList(strings1));
         stringList.add("4");
         String[] strings2 = stringList.toArray(strings1);
-        System.out.println(strings2);
+        System.out.println(Arrays.toString(strings2));
     }
 
     /**
@@ -579,7 +581,7 @@ public class DraftTest {
      */
     @Test
     public void listAdd() {
-        ArrayList list = new ArrayList();
+        List<Role> list = new ArrayList<>();
 
         list.add(roleService.getById(112));
         list.add(roleService.getById(113));
@@ -608,9 +610,9 @@ public class DraftTest {
     @Test
     public void dateTest() {
         File file = new File("D:\\Users\\Desktop\\test\\test.txt");
-        if (file.exists()){
+        if (file.exists()) {
             System.out.println(file.getName());
-        }else {
+        } else {
             File directory = new File(file.getParent());
             directory.mkdirs();
             System.out.println("创建文件夹" + directory.getName());
@@ -620,7 +622,7 @@ public class DraftTest {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println("创建文件"+file.getName());
+            System.out.println("创建文件" + file.getName());
         }
     }
 
@@ -628,9 +630,9 @@ public class DraftTest {
      * writer写入文件
      */
     @Test
-    public void write(){
+    public void write() {
         File file = new File("D:\\Users\\Desktop\\test", "write.txt");
-        if (file.exists()){
+        if (file.exists()) {
             file.delete();
         }
         try {
@@ -640,12 +642,59 @@ public class DraftTest {
             PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF-16")));
 //            printWriter.print();
             printWriter.println("使用printWriter");
-            char[] Array = {'使','用','a','b','c'};
+            char[] Array = {'使', '用', 'a', 'b', 'c'};
             printWriter.print(Array);
             printWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 流根据指定字段去重
+     */
+    @Test
+    public void distinct() {
+        User user = new User("jt", 1);
+        User user1 = new User("jt", 2);
+        User user2 = new User("jt2", 1);
+        User user3 = new User("jt2", 1);
+        User user4 = new User("jt3", 1);
+
+        List<User> userList = new ArrayList<>();
+        userList.add(user);
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        userList.add(user4);
+
+        List<String> userNameList = userList.stream().map(User::getName).distinct().collect(Collectors.toList());
+
+        //把userList注释add测试会不会有NEP问题
+//        long count = userList.stream().map(User::getName).distinct().count();
+        System.out.println(userNameList + String.valueOf(userNameList.size()));
+
+    }
+
+
+    @Test
+    public void test1() {
+//        String[] strings = {};
+//
+//        List<String> stringList = Arrays.asList(strings);
+//        dictService.removeByIds(stringList);
+//        System.out.println(stringList);
+
+        long id = SqlIdUtils.getId();
+        System.out.println(id);
+    }
+
+    @Test
+     public void  ListTest(){
+        List<Role> list = roleService.list();
+        Role target = list.get(0);
+        list.remove(target);
+    }
+
 
 }
