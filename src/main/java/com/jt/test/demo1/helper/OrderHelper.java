@@ -174,7 +174,6 @@ public class OrderHelper {
     /**
      * 点单A，专门消费美式类订单方法
      */
-    @Test
     public void consumerA(){
         CoffeAbstractFactory factroy = new AmericanoFactroy();
         CoffeeStore coffeeStore = new CoffeeStore(factroy);
@@ -189,7 +188,6 @@ public class OrderHelper {
      * 新增C具体工厂和C具体产品类，无需修改抽象工厂代码，符合开闭原则
      *
      */
-    @Test
     public void consumerB(){
         LatteFactory factory = new LatteFactory();
         CoffeeStore coffeeStore = new CoffeeStore(factory);
