@@ -1,7 +1,7 @@
-package com.jt.test.demo1.service.impl;
+package com.jt.test.demo1.service.factory.impl;
 
 import com.jt.test.demo1.domain.Coffee;
-import com.jt.test.demo1.service.CoffeAbstractFactory;
+import com.jt.test.demo1.service.factory.CoffeAbstractFactory;
 
 /**
  * CoffeeStore

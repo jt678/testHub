@@ -1,4 +1,4 @@
-package com.jt.test.demo1.service;
+package com.jt.test.demo1.service.factory;
 
 import com.jt.test.demo1.domain.Coffee;
 

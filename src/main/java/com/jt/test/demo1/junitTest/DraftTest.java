@@ -15,6 +15,7 @@ import com.jt.test.demo1.domain.entity.Order;
 import com.jt.test.demo1.domain.entity.Role;
 import com.jt.test.demo1.domain.vo.User;
 import com.jt.test.demo1.service.*;
+import com.jt.test.demo1.service.factory.LoginStrategy;
 import com.jt.test.demo1.utils.Enums.GenderEnum;
 import com.jt.test.demo1.utils.SqlIdUtils;
 import org.junit.Test;

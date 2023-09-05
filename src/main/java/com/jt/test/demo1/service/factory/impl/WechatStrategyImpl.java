@@ -1,6 +1,6 @@
-package com.jt.test.demo1.service.impl;
+package com.jt.test.demo1.service.factory.impl;
 
-import com.jt.test.demo1.service.LoginStrategy;
+import com.jt.test.demo1.service.factory.LoginStrategy;
 import org.springframework.stereotype.Service;
 
 /**
