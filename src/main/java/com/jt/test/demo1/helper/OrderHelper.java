@@ -9,18 +9,25 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jt.test.demo1.common.HttpResult;
 import com.jt.test.demo1.convert.OrderConvert;
+import com.jt.test.demo1.domain.AmericanoCoffee;
+import com.jt.test.demo1.domain.Coffee;
 import com.jt.test.demo1.domain.entity.MemberPrice;
 import com.jt.test.demo1.domain.entity.Order;
 import com.jt.test.demo1.domain.bo.OrderBO;
 import com.jt.test.demo1.domain.dto.OrderDTO;
 import com.jt.test.demo1.domain.vo.OrderVO;
 
+import com.jt.test.demo1.service.CoffeAbstractFactory;
 import com.jt.test.demo1.service.MemberPriceService;
 import com.jt.test.demo1.service.OrderService;
 import com.jt.test.demo1.service.RedisService;
+import com.jt.test.demo1.service.impl.AmericanoFactroy;
+import com.jt.test.demo1.service.impl.CoffeeStore;
+import com.jt.test.demo1.service.impl.LatteFactory;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
@@ -169,5 +176,29 @@ public class OrderHelper {
         return new AsyncResult<String>("异步任务1完成");
     }
 
+    /**
+     * 点单A，专门消费美式类订单方法
+     */
+    @Test
+    public void consumerA(){
+        CoffeAbstractFactory factroy = new AmericanoFactroy();
+        CoffeeStore coffeeStore = new CoffeeStore(factroy);
+        Coffee coffee = coffeeStore.orderCoffee();
+        System.out.println("消费者消费了"+coffee.getName());
+    }
 
+    /**
+     * 点单B，专门消费拿铁类订单方法
+     * 此种工厂模式相比简单工厂在选择具体产品时候并不需要在抽象工厂中做判断，
+     * 而是由消费方通过初始化想要的产品对应的工厂来生产，如果后续有新产品C，调用方只需要
+     * 新增C具体工厂和C具体产品类，无需修改抽象工厂代码，符合开闭原则
+     *
+     */
+    @Test
+    public void consumerB(){
+        LatteFactory factory = new LatteFactory();
+        CoffeeStore coffeeStore = new CoffeeStore(factory);
+        Coffee coffee = coffeeStore.orderCoffee();
+        System.out.println("消费者消费了"+coffee.getName());
+    }
 }
